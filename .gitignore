@@ -1,0 +1,9 @@
+.gradle/
+.gradle-home/
+**/build/
+local.properties
+*.jks
+.idea/
+.impeccable/review/
+.impeccable/mocks/
+output/
