@@ -9,7 +9,8 @@ import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.request.ImageRequest
 import coil3.size.Size
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import okio.Path.Companion.toOkioPath
 import pl.charlie.repertuar.data.*
@@ -24,6 +25,27 @@ fun cinemaToday(): LocalDate = LocalDate.now(ZoneId.of("Europe/Warsaw"))
 class CharlieApplication : Application(), SingletonImageLoader.Factory {
     val repository by lazy { ScheduleRepository(File(filesDir, "schedule"), CharlieSource()) }
     val updates by lazy { UpdateRepository(File(filesDir, "updates"), GitHubReleaseSource(), AppVersion.parse(BuildConfig.VERSION_NAME)) }
+    val apkDownloads by lazy { ApkDownloadRepository(File(filesDir, "updates/apk"),
+        AppVersion.parse(BuildConfig.VERSION_NAME), GitHubApkTransport(), AndroidApkVerifier(this)::verify) }
+    private val downloadScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var downloadJob: Job? = null
+
+    fun downloadUpdate(release: AppRelease) {
+        if (downloadJob?.isActive == true) return
+        downloadJob = downloadScope.launch {
+            var candidate = release
+            if (candidate.sha256 == null || candidate.size == 0L) {
+                updates.check(force = true)
+                candidate = updates.state.first { !it.checking }.available ?: run {
+                    apkDownloads.installationError("Sprawdź aktualizacje ponownie, aby pobrać najnowszy plik.")
+                    return@launch
+                }
+            }
+            apkDownloads.download(candidate)
+        }
+    }
+    fun cancelDownload() { downloadJob?.cancel() }
+
     override fun onCreate() {
         super.onCreate()
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)

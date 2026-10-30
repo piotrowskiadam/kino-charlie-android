@@ -5,7 +5,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import pl.charlie.repertuar.StartupPhase
 import pl.charlie.repertuar.data.*
 import pl.charlie.repertuar.updates.*
@@ -17,20 +17,80 @@ class CharlieInteractionsTest {
     private val film = Film("one", "Lalka", "https://www.charlie.pl/", genre = "dramat", durationMinutes = 162)
     private val second = Film("two", "Pieśni lasu", "https://www.charlie.pl/", genre = "dokumentalny")
 
+    @Test fun cancelledNativeDownloadCanBeRetriedInsideCinemaTab() {
+        val release = AppRelease(AppVersion.parse("0.1.9"), 300L, "a".repeat(64))
+        val transfer = mutableStateOf(ApkDownloadState(release, DownloadPhase.Downloading, 75L))
+        compose.setContent { CharlieTheme {
+            CharlieApp(Library(), false, null, true, {}, {}, {}, {}, today,
+                updates = AppUpdateUi(UpdateState(release), transfer = transfer.value,
+                    cancel = { transfer.value = ApkDownloadState(release, DownloadPhase.Failed, error = "Anulowano pobieranie.") },
+                    download = { transfer.value = ApkDownloadState(it, DownloadPhase.Downloading) }))
+        } }
+        compose.onNodeWithTag("tab-cinema").performClick()
+        compose.onNodeWithText("Anuluj pobieranie").performScrollTo().performClick()
+        compose.onNodeWithText("Anulowano pobieranie.").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Pobierz ponownie").performScrollTo().performClick()
+        compose.onNodeWithText("Pobieranie aktualizacji… 0%").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Sprawdź aktualizacje").performScrollTo().assertIsNotEnabled()
+    }
+
+    @Test fun nativeDownloadShowsProgressAndReadyApkCanInstallOfflineWithoutOpeningBrowser() {
+        val release = AppRelease(AppVersion.parse("0.1.9"), 300L, "a".repeat(64))
+        val transfer = mutableStateOf(ApkDownloadState())
+        val online = mutableStateOf(true)
+        var installed = false
+        var opened = false
+        compose.setContent { CharlieTheme {
+            CharlieApp(Library(), false, null, online.value, {}, {}, {}, { opened = true }, today,
+                updates = AppUpdateUi(UpdateState(release),
+                    download = { transfer.value = ApkDownloadState(it, DownloadPhase.Downloading, 75L) },
+                    transfer = transfer.value, install = { installed = true }))
+        } }
+        compose.onNodeWithTag("tab-cinema").performClick()
+        compose.onNodeWithText("Pobierz aktualizację").performScrollTo().performClick()
+        compose.onNodeWithText("Pobieranie aktualizacji… 25%").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Pobierz aktualizację").assertDoesNotExist()
+        compose.runOnIdle {
+            transfer.value = ApkDownloadState(release, DownloadPhase.Ready, 300L)
+            online.value = false
+        }
+        compose.onNodeWithText("Zainstaluj aktualizację").performScrollTo().assertIsEnabled().performClick()
+        compose.runOnIdle { assertTrue(installed); assertFalse(opened) }
+    }
+
+    @Test fun filmwebSearchIncludesEncodedPolishTitleInCurrentQueryParameter() {
+        var opened = ""
+        val title = "Zażółć & ja?"
+        val item = film.copy(title = title)
+        val library = Library(films = mapOf(item.id to item), days = mapOf(today to ScheduleDay(
+            today, listOf(item), listOf(Screening(item.id, today, "13:45", "Studyjna")), 1_000L)))
+        compose.setContent { CharlieTheme {
+            CharlieApp(library, false, null, true, {}, {}, {}, { opened = it }, today)
+        } }
+        compose.onNodeWithTag("film-${item.id}").performClick()
+        compose.onNodeWithText("Szukaj w Filmweb").performScrollTo().performClick()
+        compose.runOnIdle {
+            val uri = android.net.Uri.parse(opened)
+            assertEquals("www.filmweb.pl", uri.host)
+            assertEquals(title, uri.getQueryParameter("query"))
+            assertNull(uri.getQueryParameter("q"))
+        }
+    }
+
     @Test fun cinemaTabOffersTheNewVersionAndDownloadKeepsScheduleAvailable() {
         var downloaded: AppRelease? = null
         val library = Library(films = mapOf("one" to film), days = mapOf(today to ScheduleDay(
             today, listOf(film), listOf(Screening("one", today, "13:45", "Studyjna")), 1_000L)))
         compose.setContent { CharlieTheme {
             CharlieApp(library, false, null, true, {}, {}, {}, {}, today,
-                updates = AppUpdateUi(UpdateState(AppRelease(AppVersion.parse("0.1.5")), 1_000L),
+                updates = AppUpdateUi(UpdateState(AppRelease(AppVersion.parse("0.1.9")), 1_000L),
                     download = { downloaded = it }))
         } }
         compose.onNodeWithTag("tab-cinema").performClick()
-        compose.onNodeWithText("Dostępna wersja 0.1.5").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Dostępna wersja 0.1.9").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Pobierz aktualizację").performScrollTo().performClick()
         compose.runOnIdle {
-            assertEquals("https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.5/Charlie-MVP-0.1.5.apk",
+            assertEquals("https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.9/Charlie-MVP-0.1.9.apk",
                 downloaded?.downloadUrl)
         }
         compose.onNodeWithTag("tab-schedule").performClick()
@@ -40,11 +100,11 @@ class CharlieInteractionsTest {
     @Test fun knownUpdateRemainsVisibleOfflineWithoutAllowingDownloadOrChecking() {
         compose.setContent { CharlieTheme {
             CharlieApp(Library(), false, null, false, {}, {}, {}, {}, today,
-                updates = AppUpdateUi(UpdateState(AppRelease(AppVersion.parse("0.1.5")), 1_000L)))
+                updates = AppUpdateUi(UpdateState(AppRelease(AppVersion.parse("0.1.9")), 1_000L)))
         } }
         compose.onNodeWithContentDescription("Dostępna aktualizacja aplikacji", useUnmergedTree = true).assertExists()
         compose.onNodeWithTag("tab-cinema").performClick()
-        compose.onNodeWithText("Dostępna wersja 0.1.5").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Dostępna wersja 0.1.9").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Pobierz aktualizację").performScrollTo().assertIsNotEnabled()
         compose.onNodeWithText("Sprawdź aktualizacje").performScrollTo().assertIsNotEnabled()
         compose.onNodeWithText("Połącz się z internetem, aby sprawdzić lub pobrać aktualizację.")

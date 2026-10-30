@@ -67,7 +67,7 @@ class UpdateRepository(private val directory: File, private val source: GitHubRe
         runCatching {
             val json = JSONObject(cache.readText())
             require(json.getInt("schema") == 1)
-            val release = json.optString("version").takeIf { it.isNotBlank() }?.let { AppRelease(AppVersion.parse(it)) }
+            val release = json.optString("version").takeIf { it.isNotBlank() }?.let { releaseFromJson(json) }
             val checkedAt = json.optLong("checkedAt").coerceAtLeast(0L)
             lastRelease = release
             mutableState.value = UpdateState(release?.takeIf { it.version > installed }, checkedAt)
@@ -78,7 +78,7 @@ class UpdateRepository(private val directory: File, private val source: GitHubRe
     private fun persist(release: AppRelease?, checkedAt: Long) {
         directory.mkdirs()
         val temporary = File(directory, "latest.tmp")
-        temporary.writeText(JSONObject().put("schema", 1).put("version", release?.version?.toString())
+        temporary.writeText((release?.toJson() ?: JSONObject()).put("schema", 1)
             .put("checkedAt", checkedAt).put("lastAttempt", lastAttempt).toString())
         Files.move(temporary.toPath(), cache.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
     }

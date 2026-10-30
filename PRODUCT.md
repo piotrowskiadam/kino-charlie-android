@@ -31,7 +31,7 @@ The user also approves https://bilety.charlie.pl/MSI/mvc/pl as a supplemental in
 - Quiet background synchronization and local persistence, fetching up to 14 days ahead where the cinema publishes screenings.
 - Uniform poster presentation using the main cinema poster, then a ticketing-system image matched by exact event, date, time and title. Do not enlarge tiny legacy thumbnails. No third-party API credentials.
 - Filmweb link should identify whether it opens search rather than a verified film page.
-- Quiet app-update checks against the public GitHub release channel, at most daily while the app is used, plus manual checking and an explicit APK download action. Android and the browser handle installation with user confirmation.
+- Quiet app-update checks against the public GitHub release channel, at most daily while the app is used, plus manual checking and an explicit APK download action. APK downloads stay inside the app with progress, cancellation and a durable verified result; Android handles installation with user confirmation and a one-time install-source permission.
 - No account, custom backend or payment processing in this app.
 - Unofficial project; do not imply endorsement by the cinema.
 - Pure black ordinary text in light mode; pure white text and true-black neutral OLED surfaces in dark mode, with readable selected controls and the positive logo plaque.

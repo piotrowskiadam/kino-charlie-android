@@ -14,7 +14,7 @@ data class AppVersion private constructor(val major: Int, val minor: Int, val pa
     }
 }
 
-data class AppRelease(val version: AppVersion) {
+data class AppRelease(val version: AppVersion, val size: Long = 0L, val sha256: String? = null) {
     val tag: String get() = "v$version"
     val filename: String get() = "Charlie-MVP-$version.apk"
     val pageUrl: String get() = "$RepositoryUrl/releases/tag/$tag"
@@ -32,3 +32,10 @@ data class UpdateState(
     val checking: Boolean = false,
     val error: String? = null,
 )
+
+internal fun AppRelease.toJson(): org.json.JSONObject = org.json.JSONObject()
+    .put("version", version.toString()).put("size", size).put("sha256", sha256)
+
+internal fun releaseFromJson(json: org.json.JSONObject): AppRelease = AppRelease(
+    AppVersion.parse(json.getString("version")), json.optLong("size"),
+    json.optString("sha256").takeIf { it.matches(Regex("[a-f0-9]{64}")) })

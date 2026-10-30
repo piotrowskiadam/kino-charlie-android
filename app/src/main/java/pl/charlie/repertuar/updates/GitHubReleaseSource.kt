@@ -14,12 +14,12 @@ class GitHubReleaseSource(private val readResponse: suspend () -> String = { fet
         val release = AppRelease(AppVersion.parse(json.getString("tag_name").removePrefix("v")))
         require(json.getString("tag_name") == release.tag && json.getString("html_url") == release.pageUrl)
         val assets = json.getJSONArray("assets")
-        require((0 until assets.length()).any { index ->
-            val asset = assets.getJSONObject(index)
+        val apk = (0 until assets.length()).map { assets.getJSONObject(it) }.firstOrNull { asset ->
             asset.optString("name") == release.filename && asset.optString("state") == "uploaded" &&
                 asset.optLong("size") > 0L && asset.optString("browser_download_url") == release.downloadUrl
-        }) { "Release has no official APK" }
-        release
+        } ?: error("Release has no official APK")
+        val digest = apk.optString("digest").removePrefix("sha256:").lowercase()
+        release.copy(size = apk.getLong("size"), sha256 = digest.takeIf { it.matches(Regex("[a-f0-9]{64}")) })
     }
 
     companion object {

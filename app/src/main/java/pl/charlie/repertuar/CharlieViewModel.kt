@@ -14,6 +14,7 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
     private val app = application as CharlieApplication
     val library = app.repository.library
     val updates = app.updates.state
+    val apkDownload = app.apkDownloads.state
     private val mutableToday = MutableStateFlow(cinemaToday())
     val today = mutableToday.asStateFlow()
     private val mutableStartup = MutableStateFlow(StartupPhase.CheckingCache)
@@ -56,6 +57,7 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
 
     fun onResume() {
         viewModelScope.launch {
+            app.apkDownloads.load()
             app.updates.load()
             if (connected()) app.updates.check()
         }
@@ -71,6 +73,9 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
             else if (!hasRequestedAssets && library.value.days.values.any(library.value::needsPosters)) requestAssets()
         }
     }
+
+    fun downloadUpdate(release: pl.charlie.repertuar.updates.AppRelease) = app.downloadUpdate(release)
+    fun cancelDownload() = app.cancelDownload()
 
     fun checkUpdates() { if (connected()) viewModelScope.launch { app.updates.check(force = true) } }
 

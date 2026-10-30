@@ -95,7 +95,7 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                 if (!wide && detail == null) NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLow, tonalElevation = 0.dp) {
                     destinations.forEachIndexed { index, destination ->
                         NavigationBarItem(selected = tab == index, onClick = { tab = index },
-                            icon = { DestinationIcon(destination, updates.state.available != null) }, label = { Text(destination.label) },
+                            icon = { DestinationIcon(destination, updates.state.available != null || updates.transfer.release != null) }, label = { Text(destination.label) },
                             colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                 selectedTextColor = MaterialTheme.colorScheme.onSurface, indicatorColor = MaterialTheme.colorScheme.primaryContainer),
                             modifier = Modifier.testTag(destination.tag))
@@ -107,7 +107,7 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                 if (wide && detail == null) NavigationRail(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
                     Spacer(Modifier.height(16.dp))
                     destinations.forEachIndexed { index, destination -> NavigationRailItem(
-                        selected = tab == index, onClick = { tab = index }, icon = { DestinationIcon(destination, updates.state.available != null) },
+                        selected = tab == index, onClick = { tab = index }, icon = { DestinationIcon(destination, updates.state.available != null || updates.transfer.release != null) },
                         label = { Text(destination.label) }, modifier = Modifier.testTag(destination.tag),
                         colors = NavigationRailItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             selectedTextColor = MaterialTheme.colorScheme.onSurface, indicatorColor = MaterialTheme.colorScheme.primaryContainer)) }
@@ -342,7 +342,7 @@ private fun FilmDetails(film: Film, library: Library, today: LocalDate, openUrl:
             Text(film.description.ifBlank { "Opis nie został jeszcze pobrany. Po połączeniu z internetem aplikacja uzupełni go w tle." },
                 style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 16.dp))
             Row(Modifier.padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = { openUrl("https://www.filmweb.pl/search?q=${Uri.encode(film.title)}") }) {
+                OutlinedButton(onClick = { openUrl("https://www.filmweb.pl/search?query=${Uri.encode(film.title)}") }) {
                     Icon(Icons.Outlined.OpenInNew, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Szukaj w Filmweb")
                 }
             }

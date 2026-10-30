@@ -13,9 +13,9 @@ Kotlin · Jetpack Compose · Material 3 · Android 8.0+
 
 ## Wypróbuj aplikację
 
-**[Pobierz APK 0.1.5](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.5/Charlie-MVP-0.1.5.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.5)
+**[Pobierz APK 0.1.6](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.6/Charlie-MVP-0.1.6.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.6)
 
-MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.5.md).
+MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.6.md).
 
 ## Film, godzina i właściwa sala
 
@@ -46,9 +46,9 @@ Interfejs obsługuje jasny motyw z czarnym tekstem i ciemny motyw OLED z białym
 
 W zakładce **Kino → Aktualizacje aplikacji** sprawdzisz zainstalowaną wersję i dostępne wydanie. Aplikacja sprawdza GitHuba w tle najwyżej raz na dobę podczas używania; możesz też wybrać **Sprawdź aktualizacje**. Nowa wersja dodaje dyskretną kropkę na zakładce Kino.
 
-**Pobierz aktualizację** otwiera dokładny APK z tego repozytorium w przeglądarce. Otwórz pobrany plik i potwierdź instalację w Androidzie. Repertuar działa niezależnie od aktualizacji; brak sieci zachowuje poprzednią informację. Wykrywane są zwykłe wydania z właściwym APK, z pominięciem draft i prerelease.
+**Pobierz aktualizację** pobiera APK wewnątrz aplikacji, pokazując postęp i możliwość anulowania. Gotowy plik pozostaje na telefonie po restarcie; **Zainstaluj aktualizację** działa także offline i otwiera instalator Androida. Przy pierwszej takiej instalacji zezwól Charlie na instalowanie aplikacji z tego źródła, a następnie potwierdź aktualizację. Przeglądarka i menedżer plików nie uczestniczą w pobieraniu. Przerwany transfer można ponowić od początku. Repertuar działa niezależnie od aktualizacji; brak sieci zachowuje poprzednią informację. Wykrywane są zwykłe wydania z właściwym APK, z pominięciem draft i prerelease.
 
-<p align="center"><img src="docs/screenshots/0.1.5/aktualizacje.png" width="260" alt="Sekcja aktualizacji aplikacji w zakładce Kino"></p>
+<p align="center"><img src="docs/screenshots/0.1.6/aktualizacje.png" width="260" alt="Sekcja aktualizacji aplikacji w zakładce Kino"></p>
 
 ## Uruchomienie projektu
 
@@ -70,7 +70,7 @@ Bez klucza do bazy filmów i konfiguracji backendu. [Przewodnik developmentu](do
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.5](docs/qa/2026-10-30-0.1.5.md).
+Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.6](docs/qa/2026-10-30-0.1.6.md).
 
 ## Architektura i dalszy rozwój
 

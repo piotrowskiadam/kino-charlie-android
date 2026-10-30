@@ -11,6 +11,18 @@ class UpdateRepositoryTest {
     @get:Rule val temporary = TemporaryFolder()
     private val fixture get() = javaClass.getResource("/release-v0.1.3.json")!!.readText()
 
+    @Test fun `download integrity metadata survives reopening offline`() = runTest {
+        val body = org.json.JSONObject(fixture)
+        body.getJSONArray("assets").getJSONObject(0).put("digest", "sha256:" + "a".repeat(64))
+        val directory = temporary.newFolder()
+        val first = UpdateRepository(directory, GitHubReleaseSource { body.toString() }, AppVersion.parse("0.1.2"))
+        first.check()
+        val reopened = UpdateRepository(directory, GitHubReleaseSource { error("offline") }, AppVersion.parse("0.1.2"))
+        reopened.load()
+        assertEquals(2652747L, reopened.state.value.available?.size)
+        assertEquals("a".repeat(64), reopened.state.value.available?.sha256)
+    }
+
     @Test fun `published newer release exposes its exact official APK and release page`() = runTest {
         val repository = UpdateRepository(temporary.newFolder(), GitHubReleaseSource { fixture },
             AppVersion.parse("0.1.2"), { 100_000L })
