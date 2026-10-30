@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 class CharlieViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as CharlieApplication
     val library = app.repository.library
+    private val mutableToday = MutableStateFlow(cinemaToday())
+    val today = mutableToday.asStateFlow()
     private val mutableRefreshing = MutableStateFlow(false)
     val refreshing = mutableRefreshing.asStateFlow()
     private val mutableError = MutableStateFlow<String?>(null)
@@ -31,10 +33,15 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
 
     init {
         connectivity.registerDefaultNetworkCallback(callback)
+    }
+
+    fun onResume() {
         viewModelScope.launch {
             app.repository.load()
+            val currentDate = cinemaToday()
+            mutableToday.value = currentDate
             if (System.currentTimeMillis() - library.value.lastUpdated > 6 * 60 * 60 * 1000L ||
-                cinemaToday() !in library.value.days) refresh()
+                currentDate !in library.value.days) refresh()
         }
     }
 
@@ -59,6 +66,7 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
 
     fun save(id: String) { viewModelScope.launch {
         try { app.repository.toggleSaved(id) }
+        catch (cancelled: CancellationException) { throw cancelled }
         catch (_: Exception) { mutableError.value = "Nie udało się zapisać filmu. Spróbuj ponownie." }
     } }
 

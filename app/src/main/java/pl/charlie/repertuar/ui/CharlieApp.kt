@@ -107,6 +107,9 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                     val films = if (tab == 1) library.savedIds.mapNotNull { library.films[it] }.sortedBy { it.title }
                     else screenings.map { it.filmId }.distinct().mapNotNull { library.films[it] }
                         .filter { it.title.searchKey().contains(query.searchKey()) }
+                    val timesByFilm = if (tab == 1) films.associate { film -> film.id to
+                        library.screenings(film.id).filter { !it.date.isBefore(today) }.take(3)
+                    } else screenings.groupBy { it.filmId }
                     LazyColumn(state = if (tab == 1) savedState else listState,
                         modifier = Modifier.weight(1f).testTag("film-list"),
                         contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 24.dp)) {
@@ -114,7 +117,8 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                             Text(if (tab == 0) "Wybierz swój seans." else "Na Twojej liście.",
                                 style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
-                            CacheStatus(library.days[date]?.fetchedAt ?: library.lastUpdated, refreshing, online)
+                            CacheStatus(if (tab == 0) library.days[date]?.fetchedAt ?: 0L else library.lastUpdated,
+                                refreshing, online, "Ten dzień czeka na pobranie")
                             Spacer(Modifier.height(16.dp))
                         }
                         if (error != null) item("error") { ErrorNotice(error, onRefresh, refreshing) }
@@ -160,6 +164,7 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                                 refreshing && date !in library.days -> EmptyState(Icons.Outlined.CloudDownload, "Pobieramy repertuar", "Za chwilę będzie dostępny także bez internetu.")
                                 !online && date !in library.days -> EmptyState(Icons.Outlined.WifiOff, "Ten dzień czeka na pobranie", "Połącz się z internetem i odśwież repertuar.", "Spróbuj ponownie", onRefresh)
                                 error != null && date !in library.days -> EmptyState(Icons.Outlined.CloudOff, "Repertuar jest niedostępny", "Sprawdź połączenie i spróbuj ponownie.", "Odśwież repertuar", onRefresh)
+                                date !in library.days -> EmptyState(Icons.Outlined.CloudDownload, "Ten dzień czeka na pobranie", "Odśwież repertuar, aby sprawdzić seanse na wybrany dzień.", "Odśwież repertuar", onRefresh)
                                 else -> EmptyState(Icons.Outlined.EventAvailable, "Jeszcze bez seansów", "Kino nie opublikowało seansów na ten dzień. Sprawdź inny termin lub wróć później.", "Odśwież repertuar", onRefresh)
                             }
                         }
@@ -167,15 +172,13 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                             items(films.chunked(2), key = { it.first().id }) { pair ->
                                 Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
                                     pair.forEach { film -> Box(Modifier.weight(1f)) {
-                                        FilmRow(film, if (tab == 1) library.screenings(film.id).filter { !it.date.isBefore(today) }.take(3)
-                                            else screenings.filter { it.filmId == film.id }, { detailId = film.id }, { booking = it }, tab == 1)
+                                        FilmRow(film, timesByFilm[film.id].orEmpty(), { detailId = film.id }, { booking = it }, tab == 1)
                                     } }
                                     if (pair.size == 1) Spacer(Modifier.weight(1f))
                                 }
                             }
                         } else items(films, key = { it.id }) { film ->
-                            FilmRow(film, if (tab == 1) library.screenings(film.id).filter { !it.date.isBefore(today) }.take(3)
-                                else screenings.filter { it.filmId == film.id }, { detailId = film.id }, { booking = it }, tab == 1)
+                            FilmRow(film, timesByFilm[film.id].orEmpty(), { detailId = film.id }, { booking = it }, tab == 1)
                         }
                         if (films.isNotEmpty()) item("source") {
                             Text("Repertuar: charlie.pl · godziny i dostępność potwierdza kasa kina.",
@@ -215,11 +218,11 @@ private val destinations = listOf(Destination("Repertuar", Icons.Outlined.Calend
     Destination("Zapisane", Icons.Outlined.BookmarkBorder, "tab-saved"), Destination("Kino", Icons.Outlined.Info, "tab-cinema"))
 
 @Composable
-private fun CacheStatus(timestamp: Long, refreshing: Boolean, online: Boolean) {
+private fun CacheStatus(timestamp: Long, refreshing: Boolean, online: Boolean, emptyLabel: String = "Repertuar zapisze się na telefonie") {
     val date = Instant.ofEpochMilli(timestamp).atZone(ZoneId.of("Europe/Warsaw"))
     val text = when {
         refreshing -> "Odświeżanie repertuaru"
-        timestamp == 0L -> if (online) "Repertuar zapisze się na telefonie" else "Brak połączenia z internetem"
+        timestamp == 0L -> if (online) emptyLabel else "Brak połączenia z internetem"
         else -> (if (!online) "Offline · " else "") + "Zapisano ${date.format(DateTimeFormatter.ofPattern("dd.MM, HH:mm", Polish))}"
     }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -265,7 +268,7 @@ private fun FilmRow(film: Film, screenings: List<Screening>, open: () -> Unit, b
                     modifier = Modifier.padding(top = 3.dp))
                 val meta = listOf(film.production, if (film.durationMinutes > 0) "${film.durationMinutes} min" else "").filter { it.isNotBlank() }.joinToString(" · ")
                 if (meta.isNotEmpty()) Text(meta, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 4.dp)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 4.dp)) {
                     screenings.forEach { screening ->
                         OutlinedButton(onClick = { book(screening) }, shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),

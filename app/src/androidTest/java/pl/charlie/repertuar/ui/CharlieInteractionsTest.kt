@@ -5,6 +5,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import org.junit.Rule
 import org.junit.Test
+import org.junit.Assert.assertEquals
 import pl.charlie.repertuar.data.*
 import java.time.LocalDate
 
@@ -14,7 +15,7 @@ class CharlieInteractionsTest {
     private val film = Film("one", "Lalka", "https://www.charlie.pl/", genre = "dramat", durationMinutes = 162)
     private val second = Film("two", "Pieśni lasu", "https://www.charlie.pl/", genre = "dokumentalny")
 
-    private fun launch() {
+    private fun launch(online: Boolean = false, onBook: (Screening) -> Unit = {}, todayState: State<LocalDate>? = null) {
         compose.setContent {
             var library by remember { mutableStateOf(Library(
                 days = mapOf(today to ScheduleDay(today, listOf(film, second), listOf(
@@ -24,9 +25,9 @@ class CharlieInteractionsTest {
                         Screening("two", today.plusDays(1), "17:00", "Kameralna")), 1_000L)),
                 films = mapOf("one" to film, "two" to second))) }
             CharlieTheme {
-                CharlieApp(library, false, null, false, {}, { id -> library = library.copy(
+                CharlieApp(library, false, null, online, {}, { id -> library = library.copy(
                     savedIds = if (id in library.savedIds) library.savedIds - id else library.savedIds + id)
-                }, {}, {}, today)
+                }, onBook, {}, todayState?.value ?: today)
             }
         }
     }
@@ -59,5 +60,30 @@ class CharlieInteractionsTest {
         compose.onNodeWithText("Sala Studyjna").assertIsDisplayed()
         compose.onNodeWithText("Do zakupu biletu potrzebujesz internetu.").assertIsDisplayed()
         compose.onNodeWithText("Przejdź do kasy kina").assertIsNotEnabled()
+    }
+
+    @Test fun onlineCheckoutReceivesTheSelectedScreeningsExactSourceUrl() {
+        var selected: Screening? = null
+        launch(online = true, onBook = { selected = it })
+        compose.onNodeWithTag("screening-${today}|13:45|one|Studyjna").performClick()
+        compose.onNodeWithText("Przejdź do kasy kina").performClick()
+        compose.runOnIdle { assertEquals("https://bilety.charlie.pl/MSI/?event_id=1", selected?.bookingUrl) }
+    }
+
+    @Test fun changingCinemaDateAfterMidnightUpdatesTheSelectedDay() {
+        val currentDay = mutableStateOf(today)
+        launch(todayState = currentDay)
+        compose.onNodeWithTag("film-one").assertExists()
+        compose.runOnIdle { currentDay.value = today.plusDays(1) }
+        compose.onNodeWithTag("date-${today.plusDays(1)}").assertIsSelected()
+        compose.onNodeWithTag("film-one").assertDoesNotExist()
+        compose.onNodeWithTag("film-two").assertExists()
+    }
+
+    @Test fun unfetchedDateDoesNotClaimAnotherDaysSavedTimestamp() {
+        launch(online = true)
+        compose.onNodeWithTag("date-${today.plusDays(2)}").performClick()
+        compose.onAllNodesWithText("Ten dzień czeka na pobranie").onFirst().assertIsDisplayed()
+        compose.onNodeWithText("Zapisano", substring = true).assertDoesNotExist()
     }
 }

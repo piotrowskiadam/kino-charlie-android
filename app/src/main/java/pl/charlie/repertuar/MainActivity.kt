@@ -10,6 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.Lifecycle
 import androidx.compose.runtime.getValue
 import pl.charlie.repertuar.data.SourceLinks
 import pl.charlie.repertuar.ui.*
@@ -24,10 +26,12 @@ class MainActivity : ComponentActivity() {
             val refreshing by model.refreshing.collectAsStateWithLifecycle()
             val error by model.error.collectAsStateWithLifecycle()
             val online by model.online.collectAsStateWithLifecycle()
+            val today by model.today.collectAsStateWithLifecycle()
+            LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { model.onResume() }
             CharlieTheme {
                 CharlieApp(library, refreshing, error, online, model::refresh, model::save,
                     { screening -> SourceLinks.booking(screening.bookingUrl).takeIf { it.isNotBlank() }?.let(::open) },
-                    ::open, cinemaToday())
+                    ::open, today)
             }
         }
     }
