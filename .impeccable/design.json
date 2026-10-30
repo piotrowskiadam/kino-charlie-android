@@ -916,6 +916,11 @@
         "name": "The OLED Rule",
         "body": "Ordinary text is #000000 in light mode and #FFFFFF in dark mode. Dark neutral surfaces, window background and system navigation are #000000; preserve colored selections, artwork and the positive logo plaque.",
         "section": "colors"
+      },
+      {
+        "name": "The Refresh Action Rule",
+        "body": "Kino schedule refresh and app update check use outlined capsules: 1dp on-surface border, 48dp minimum height, decorative 18dp icon and 8dp gap. Disabled borders use outline-variant; labels keep pure foreground and disabled semantics. Keep 8dp above the controls.",
+        "section": "layout"
       }
     ],
     "dos": [

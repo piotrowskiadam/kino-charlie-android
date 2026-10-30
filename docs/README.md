@@ -10,6 +10,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Powitanie, plakaty i branding](specs/first-run-and-branding.md) | Pierwsze przygotowanie, poprawa obrazów i identyfikacja kina |
 | [Aktualizacje aplikacji](specs/updates.md) | Sprawdzanie wydań, cache informacji i pobieranie APK |
 | [Wyszukiwanie Filmweb](specs/filmweb.md) | Poprawny parametr i tytuły ze znakami specjalnymi |
+| [Przyciski odświeżania](specs/refresh-buttons.md) | Widoczny obrys, ikonki i stany akcji w Kino |
 | [Monochromatyczny tekst i OLED](specs/oled.md) | Czysta czerń/biel, neutralne powierzchnie i paski systemowe |
 | [Widoczność sal](specs/rooms.md) | Nazwa sali przy godzinach i jednoznaczne rozróżnianie seansów |
 | [GLOSSARY](../GLOSSARY.md) | Znaczenie pojęć domenowych |
@@ -27,6 +28,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Raport 0.1.4](qa/2026-10-30-0.1.4.md) | Sprawdzanie wydań, limit dobowy, cache offline i przycisk pobrania APK |
 | [Raport 0.1.5](qa/2026-10-30-0.1.5.md) | Monochromatyczny tekst, tła OLED i pomiary pikseli |
 | [Raport 0.1.6](qa/2026-10-30-0.1.6.md) | Filmweb i natywne pobieranie oraz instalacja aktualizacji |
+| [Raport 0.1.7](qa/2026-10-30-0.1.7.md) | Rozpoznawalne przyciski sprawdzania i odświeżania |
 | [Śledzenie prac](agents/issue-tracker.md) | Miejsce zapisu zakresu zmian i ograniczeń |
 | [Instrukcje dla agentów](../AGENTS.md) | Warunki sięgania do dokumentów i ich aktualizowania |
 

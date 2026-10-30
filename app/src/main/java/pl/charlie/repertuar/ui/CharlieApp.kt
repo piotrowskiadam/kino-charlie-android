@@ -382,7 +382,11 @@ private fun CinemaInfo(library: Library, online: Boolean, refreshing: Boolean, r
         Text("Zapisujemy do 14 dni repertuaru, opisy i plakaty, gdy kino je udostępni. Aplikacja odświeża dane w tle, gdy pozwalają na to połączenie i ustawienia baterii telefonu.",
             style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 16.dp))
         CacheStatus(library.lastUpdated, refreshing, online)
-        ProgramTextButton(onClick = refresh, enabled = !refreshing) { Text("Odśwież teraz") }
+        ProgramOutlinedButton(onClick = refresh, enabled = !refreshing, modifier = Modifier.padding(top = 8.dp)) {
+            Icon(Icons.Outlined.Refresh, null, Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Odśwież teraz")
+        }
         Text("Kupno biletu wymaga internetu. Ceny, miejsca i płatność obsługuje strona Kina Charlie.", style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 12.dp))
         HorizontalDivider(Modifier.padding(vertical = 24.dp))

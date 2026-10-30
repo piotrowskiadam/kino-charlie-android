@@ -1,6 +1,8 @@
 package pl.charlie.repertuar.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.SystemUpdate
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -89,6 +91,11 @@ internal fun AppUpdateSection(updates: AppUpdateUi, online: Boolean, openUrl: (S
         }
         if (!online) Text("Połącz się z internetem, aby sprawdzić lub pobrać aktualizację.",
             style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 12.dp))
-        ProgramTextButton(onClick = updates.check, enabled = online && !state.checking && !transfer.busy) { Text("Sprawdź aktualizacje") }
+        ProgramOutlinedButton(onClick = updates.check, enabled = online && !state.checking && !transfer.busy,
+            modifier = Modifier.padding(top = 8.dp)) {
+            Icon(Icons.Outlined.SystemUpdate, null, Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Sprawdź aktualizacje")
+        }
     }
 }

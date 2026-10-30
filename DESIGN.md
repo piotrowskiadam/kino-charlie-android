@@ -207,6 +207,8 @@ Posters use the 8dp corner token. Screening outlines use 10dp corners; date tile
 
 Screening times are outlined monochrome actions with a 1dp primary stroke, semibold Material labelLarge and the recorded screening padding/corner tokens. Each room's times sit under a visible “Sala <name>” label; the button's accessible name includes the time and room. A time opens a focused modal sheet; the row itself opens film details. Checkout is a full-width Material filled button with a confirmation icon and explicit Polish action, disabled when offline or without a permitted source URL. General external actions use Material buttons, outlined buttons or text buttons as implemented. Android supplies pressed, focus, ripple and disabled states; no custom hover animation is defined.
 
+The Kino “Odśwież teraz” and “Sprawdź aktualizacje” actions use ProgramOutlinedButton: a 1dp on-surface capsule border, 48dp minimum height, 18dp decorative Material icon and 8dp icon/label gap. Their text remains pure on-surface black/white. Disabled actions keep the same label and use outline-variant for the border; Material disabled semantics remain active. An 8dp top gap separates each action from supporting text. Filled download/install and text-only links retain their existing hierarchy.
+
 ### Date tiles
 
 The selected day uses primary-container/on-primary-container; idle days use surface-container-low/on-surface. Compact localized labels sit above native sans date numerals. A semantic selected state accompanies the visible fill change.
