@@ -22,6 +22,8 @@ Browse the cinema schedule quickly, including without a network connection after
 
 The public cinema website is https://www.charlie.pl/. It publishes per-day HTML schedules, ScreeningEvent structured data, posters, film details and individual ticket links. Checkout remains online.
 
+The user also approves https://bilety.charlie.pl/MSI/mvc/pl as a supplemental information source when the main website is difficult to use. Verified observations and integration caveats are recorded in `docs/sources/bilety-charlie.md`; this approval does not mean a second catalog importer is already implemented.
+
 ## Capabilities and Constraints
 
 - Native schedule browsing, date selection, film details, saved films and bottom navigation.

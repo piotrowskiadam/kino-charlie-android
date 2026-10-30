@@ -10,6 +10,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Widoczność sal](specs/rooms.md) | Nazwa sali przy godzinach i jednoznaczne rozróżnianie seansów |
 | [GLOSSARY](../GLOSSARY.md) | Znaczenie pojęć domenowych |
 | [Architektura](ARCHITECTURE.md) | Moduły, przepływ danych, cache, synchronizacja i granice integracji |
+| [Dodatkowe źródło MSI](sources/bilety-charlie.md) | Zgoda użytkownika, sprawdzone dane listy biletowej i warunki przyszłej integracji |
 | [DESIGN](../DESIGN.md) | Zatwierdzony kierunek UI, tokeny, komponenty i stany |
 | [Dane designu](../.impeccable/design.json) | Strukturalny zapis systemu wizualnego; aktualizowany razem z DESIGN |
 | [Makieta MVP](design/approved-mvp-variants.png) | Zachowana plansza koncepcji; zatwierdzony wariant A, z ilustracyjnymi obrazami filmów |
