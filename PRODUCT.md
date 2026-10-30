@@ -34,6 +34,7 @@ The user also approves https://bilety.charlie.pl/MSI/mvc/pl as a supplemental in
 - Quiet app-update checks against the public GitHub release channel, at most daily while the app is used, plus manual checking and an explicit APK download action. APK downloads stay inside the app with progress, cancellation and a durable verified result; Android handles installation with user confirmation and a one-time install-source permission.
 - No account, custom backend or payment processing in this app.
 - Independent, noncommercial hobby project: free to use, without advertising or user fees. The author is not affiliated with the cinema; do not imply endorsement, authorization or representation.
+- Original code and documentation use the MIT license, including permission for downstream commercial use. The project's noncommercial operation is not an added license restriction. Cinema branding and source materials are outside this grant; see LICENSE and NOTICE.md.
 - Pure black ordinary text in light mode; pure white text and true-black neutral OLED surfaces in dark mode, with readable selected controls and the positive logo plaque.
 - Android 8+ is the implemented minimum; phone is the primary target, with adaptive tablet navigation.
 

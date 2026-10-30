@@ -14,6 +14,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Monochromatyczny tekst i OLED](specs/oled.md) | Czysta czerń/biel, neutralne powierzchnie i paski systemowe |
 | [Widoczność sal](specs/rooms.md) | Nazwa sali przy godzinach i jednoznaczne rozróżnianie seansów |
 | [Źródła i prawa do zasobów](../NOTICE.md) | Pochodzenie materiałów i odrębne warunki podmiotów trzecich |
+| [Licencja MIT](../LICENSE) | Warunki użycia własnego kodu i dokumentacji, także komercyjnego |
 | [GLOSSARY](../GLOSSARY.md) | Znaczenie pojęć domenowych |
 | [Architektura](ARCHITECTURE.md) | Moduły, przepływ danych, cache, synchronizacja i granice integracji |
 | [Dodatkowe źródło MSI](sources/bilety-charlie.md) | Zgoda użytkownika, sprawdzone dane listy biletowej i warunki przyszłej integracji |
@@ -30,6 +31,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Raport 0.1.5](qa/2026-10-30-0.1.5.md) | Monochromatyczny tekst, tła OLED i pomiary pikseli |
 | [Raport 0.1.6](qa/2026-10-30-0.1.6.md) | Filmweb i natywne pobieranie oraz instalacja aktualizacji |
 | [Raport 0.1.7](qa/2026-10-30-0.1.7.md) | Rozpoznawalne przyciski sprawdzania i odświeżania |
+| [Weryfikacja licencji](qa/2026-10-31-license.md) | Zmiana dokumentacyjna: MIT, zakres praw i odnośniki |
 | [Śledzenie prac](agents/issue-tracker.md) | Miejsce zapisu zakresu zmian i ograniczeń |
 | [Instrukcje dla agentów](../AGENTS.md) | Warunki sięgania do dokumentów i ich aktualizowania |
 

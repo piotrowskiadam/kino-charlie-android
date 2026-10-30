@@ -6,6 +6,8 @@
 
 Kotlin · Jetpack Compose · Material 3 · Android 8.0+
 
+[Licencja kodu: MIT](LICENSE) · [Prawa do materiałów i źródła](NOTICE.md)
+
 **Niezależny projekt hobbystyczny, udostępniany bezpłatnie i bez celu zarobkowego.** Autor nie jest powiązany z Kinem Charlie; aplikacja powstała jako alternatywny, wygodny sposób przeglądania publicznego repertuaru. [Charakter projektu i zastrzeżenia](#charakter-projektu-i-zastrzeżenia).
 
 <p align="center">
@@ -90,6 +92,12 @@ UI obserwuje lokalny katalog przez `StateFlow`. Repozytorium zapisuje każdy pop
 HTML kina może się zmieniać. Cache obejmuje faktycznie opublikowane seanse. Obrazy MSI mają ograniczoną rozdzielczość; aplikacja nie powiększa małych miniatur głównej strony i nie wymyśla grafiki. Android decyduje o wykonaniu pracy w tle; wymuszone zatrzymanie aplikacji wstrzymuje ją do kolejnego otwarcia.
 
 Dane: [Kino Charlie](https://www.charlie.pl/) i [system biletowy](https://bilety.charlie.pl/MSI/mvc/pl). Projekt nie jest oficjalną aplikacją kina.
+
+## Licencja kodu
+
+Własny kod i dokumentacja projektu są udostępniane na [licencji MIT](LICENSE). Możesz je wykorzystywać, modyfikować i rozpowszechniać, również komercyjnie, zachowując informację o prawach autorskich i tekst licencji. Licencja zawiera wyłączenie gwarancji i odpowiedzialności w zakresie dopuszczalnym prawem.
+
+Niekomercyjny charakter tej aplikacji opisuje sposób prowadzenia projektu przez autora; nie ogranicza uprawnień innych osób wynikających z MIT. Licencja projektu nie obejmuje cudzych materiałów: oficjalnego logo i nazwy kina, repertuaru, opisów ani plakatów, także widocznych na screenshotach. Font i zależności zachowują własne licencje — szczegóły w [NOTICE.md](NOTICE.md).
 
 ## Charakter projektu i zastrzeżenia
 
