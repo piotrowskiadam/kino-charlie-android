@@ -523,7 +523,8 @@
       "Literata headings paired with native sans controls and numerals.",
       "Continuous program rows, restrained separators and a 2:3 poster silhouette.",
       "Truthful cached status, complete titles and visibly named room groups with directly actionable screening times.",
-      "System dark theme, font scaling, Android Back and adaptive navigation."
+      "System dark theme, font scaling, Android Back and adaptive navigation.",
+      "Official cinema logo, a bowler-hat/moustache launcher icon and a brief cache-aware first-run welcome."
     ],
     "rules": [
       {
@@ -545,13 +546,18 @@
         "name": "The Room Rule",
         "body": "Show the room name before the user chooses a screening time, on both schedule and saved-film lists. Repeat it prominently in film details and the screening sheet; equal times in different rooms remain separate choices.",
         "section": "layout"
+      },
+      {
+        "name": "The First Run Rule",
+        "body": "Read cache before deciding on welcome. Prepare only until today is durable, without an artificial delay; continue future days in the background. Use the official mark, honest indeterminate progress and actionable first-use failure.",
+        "section": "layout"
       }
     ],
     "dos": [
       "Do use Literata for the recorded heading roles and native sans for body, controls and date numerals.",
       "Do preserve full Polish titles, localized dates and explicit action labels.",
       "Do expose room names before time selection, preserve all room groups in saved-film previews and repeat the selected room before checkout.",
-      "Do keep source imagery at a 2:3 ratio and fall back to the source thumbnail when a poster fails.",
+      "Do keep source imagery at a 2:3 ratio and use the verified ticket image when the primary poster fails.",
       "Do retain 8dp spacing between wrapped screening buttons and a minimum 48dp screening target.",
       "Do distinguish unpublished days, empty search, first download, cached content and connection errors."
     ],

@@ -36,20 +36,19 @@ class CharlieApplication : Application(), SingletonImageLoader.Factory {
         .build()
 
     fun queueAssets() {
-        WorkManager.getInstance(this).enqueueUniqueWork("charlie-assets", ExistingWorkPolicy.KEEP,
+        WorkManager.getInstance(this).enqueueUniqueWork("charlie-assets", ExistingWorkPolicy.APPEND_OR_REPLACE,
             OneTimeWorkRequestBuilder<AssetsWorker>()
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()).build())
     }
 
     suspend fun cacheAssets() = withContext(Dispatchers.IO) {
+        repository.enrichPosters()
         repository.enrichFilms()
         for (film in repository.library.value.films.values) {
             val loader = SingletonImageLoader.get(this@CharlieApplication)
-            val primary = film.posterUrl.ifBlank { film.thumbnailUrl }
-            if (primary.isBlank()) continue
-            val result = loader.execute(ImageRequest.Builder(this@CharlieApplication).data(primary).size(Size(400, 600)).build())
-            if (result is ErrorResult && film.thumbnailUrl.isNotBlank() && film.thumbnailUrl != primary) {
-                loader.execute(ImageRequest.Builder(this@CharlieApplication).data(film.thumbnailUrl).size(Size(400, 600)).build())
+            for (url in film.posterCandidates) {
+                val result = loader.execute(ImageRequest.Builder(this@CharlieApplication).data(url).size(Size(400, 600)).build())
+                if (result !is ErrorResult) break
             }
         }
     }

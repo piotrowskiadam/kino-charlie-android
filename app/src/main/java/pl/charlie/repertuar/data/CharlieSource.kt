@@ -12,12 +12,21 @@ import java.time.format.DateTimeFormatter
 interface CinemaSource {
     suspend fun day(date: LocalDate): ScheduleDay
     suspend fun details(film: Film): Film = film
+    suspend fun posters(day: ScheduleDay): Map<String, String> = emptyMap()
 }
 
 /** Only verified source hosts may supply checkout and poster URLs. */
 object SourceLinks {
     fun booking(value: String): String = allowed(value, setOf("bilety.charlie.pl"))
     fun cinema(value: String): String = allowed(value, setOf("www.charlie.pl", "charlie.pl"))
+    fun ticketListing(value: String): String = ticketResource(value, "/MSI/mvc/pl", Regex("date=\\d{4}-\\d{2}-\\d{2}"))
+    fun poster(value: String): String = cinema(value).ifBlank {
+        ticketResource(value, "/MSI/ImageData.ashx", Regex("id=[1-9]\\d*(?:&mode=thumb)?"))
+    }
+    private fun ticketResource(value: String, path: String, query: Regex): String =
+        allowed(value, setOf("bilety.charlie.pl")).takeIf { it.isNotBlank() && URI(it).let { uri ->
+            uri.path == path && query.matches(uri.rawQuery.orEmpty())
+        } }.orEmpty()
     private fun allowed(value: String, hosts: Set<String>): String = runCatching {
         val uri = URI(value)
         if (uri.scheme == "https" && uri.host in hosts && uri.userInfo == null && uri.port in listOf(-1, 443)) value else ""
@@ -34,11 +43,16 @@ class CharlieSource(private val parser: CharlieParser = CharlieParser()) : Cinem
         parser.parseDetails(fetch(film.sourceUrl), film)
     }
 
+    override suspend fun posters(day: ScheduleDay): Map<String, String> = withContext(Dispatchers.IO) {
+        parser.ticketPosters(fetch("https://bilety.charlie.pl/MSI/mvc/pl?date=${day.date}"), day)
+    }
+
     private fun fetch(url: String): String {
-        require(SourceLinks.cinema(url).isNotEmpty())
+        require(SourceLinks.cinema(url).isNotEmpty() || SourceLinks.ticketListing(url).isNotEmpty())
         val connection = URL(url).openConnection() as HttpURLConnection
         connection.connectTimeout = 12_000
         connection.readTimeout = 15_000
+        connection.instanceFollowRedirects = false
         connection.setRequestProperty("User-Agent", "CharlieRepertuar/0.1 (Android; unofficial schedule reader)")
         connection.setRequestProperty("Accept", "text/html")
         try {

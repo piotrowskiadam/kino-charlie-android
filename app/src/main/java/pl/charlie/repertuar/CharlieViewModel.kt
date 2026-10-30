@@ -15,6 +15,10 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
     val library = app.repository.library
     private val mutableToday = MutableStateFlow(cinemaToday())
     val today = mutableToday.asStateFlow()
+    private val mutableStartup = MutableStateFlow(StartupPhase.CheckingCache)
+    val startup = mutableStartup.asStateFlow()
+    private var hasRequestedAssets = false
+    private fun requestAssets() { hasRequestedAssets = true; app.queueAssets() }
     private val mutableRefreshing = MutableStateFlow(false)
     val refreshing = mutableRefreshing.asStateFlow()
     private val mutableError = MutableStateFlow<String?>(null)
@@ -33,6 +37,19 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
 
     init {
         connectivity.registerDefaultNetworkCallback(callback)
+        viewModelScope.launch {
+            library.collect { current ->
+                if (mutableStartup.value == StartupPhase.Preparing && today.value in current.days) {
+                    mutableStartup.value = StartupPhase.Ready
+                    requestAssets()
+                }
+            }
+        }
+        viewModelScope.launch {
+            online.collect { available ->
+                if (available && mutableStartup.value == StartupPhase.Failed) refresh()
+            }
+        }
     }
 
     fun onResume() {
@@ -40,8 +57,12 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
             app.repository.load()
             val currentDate = cinemaToday()
             mutableToday.value = currentDate
+            if (mutableStartup.value == StartupPhase.CheckingCache) {
+                mutableStartup.value = if (library.value.days.isNotEmpty()) StartupPhase.Ready else StartupPhase.Preparing
+            }
             if (System.currentTimeMillis() - library.value.lastUpdated > 6 * 60 * 60 * 1000L ||
                 currentDate !in library.value.days) refresh()
+            else if (!hasRequestedAssets && library.value.days.values.any(library.value::needsPosters)) requestAssets()
         }
     }
 
@@ -49,18 +70,29 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
         if (mutableRefreshing.value) return
         mutableRefreshing.value = true
         mutableError.value = null
+        if (mutableStartup.value != StartupPhase.Ready) mutableStartup.value = StartupPhase.Preparing
         viewModelScope.launch {
             try {
+                if (!connected()) {
+                    mutableOnline.value = false
+                    mutableError.value = "Brak połączenia z internetem. Połącz się i spróbuj ponownie."
+                    return@launch
+                }
                 val result = app.repository.refresh(cinemaToday(), 14)
                 mutableError.value = when {
                     result.updatedDays == 0 -> "Nie udało się odświeżyć repertuaru. Sprawdź połączenie i spróbuj ponownie."
                     result.failedDays > 0 -> "Część dni czeka na odświeżenie. Zachowano poprzedni repertuar."
                     else -> null
                 }
-                if (result.updatedDays > 0) app.queueAssets()
+                if (result.updatedDays > 0) requestAssets()
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (_: Exception) { mutableError.value = "Nie udało się zapisać repertuaru. Spróbuj ponownie." }
-            finally { mutableRefreshing.value = false }
+            finally {
+                if (mutableStartup.value != StartupPhase.Ready) {
+                    mutableStartup.value = if (today.value in library.value.days) StartupPhase.Ready else StartupPhase.Failed
+                }
+                mutableRefreshing.value = false
+            }
         }
     }
 

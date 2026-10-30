@@ -5,6 +5,18 @@ import org.junit.Test
 import java.time.LocalDate
 
 class CharlieParserTest {
+    @Test fun `ticket poster matches the exact event date time and film without replacing room metadata`() {
+        val parser = CharlieParser()
+        val day = parser.parseDay(javaClass.getResource("/schedule-2026-10-30.html")!!.readText(charset("ISO-8859-2")),
+            LocalDate.parse("2026-10-30"), 100L)
+        val html = javaClass.getResource("/ticket-posters-2026-10-30.html")!!.readText()
+        assertEquals("https://bilety.charlie.pl/MSI/ImageData.ashx?id=2980&mode=thumb",
+            parser.ticketPosters(html, day)["1783855134"])
+        assertTrue(parser.ticketPosters(html.replace("97086", "100000").replace("97087", "100001")
+            .replace("97196", "100002").replace("97197", "100003"), day).isEmpty())
+        assertTrue(parser.ticketPosters(html.replace("30 października 2026", "31 października 2026"), day).isEmpty())
+        assertTrue(parser.ticketPosters(html.replace("bilety.charlie.pl/MSI/ImageData", "evil.example/MSI/ImageData"), day).isEmpty())
+    }
     @Test fun `source thumbnail is retained as fallback when structured poster is broken`() {
         val html = javaClass.getResource("/schedule-2026-10-30.html")!!.readText(charset("ISO-8859-2"))
         val day = CharlieParser().parseDay(html, LocalDate.parse("2026-10-30"), 100L)

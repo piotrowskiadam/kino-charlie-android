@@ -113,7 +113,7 @@ The user selected variant A in `docs/design/approved-mvp-variants.png`. The ship
 - Truthful cached status, complete titles and visibly named room groups with directly actionable screening times.
 - System dark theme, font scaling, Android Back and adaptive navigation.
 
-The preserved direction contract is: **THESIS:** choose a film and its exact screening quickly from a locally saved schedule. **OWN-WORLD:** printed pocket program translated into Literata, warm ivory, burgundy and native sans. **STORY:** saved status → date → film → time → focused screening sheet → source-owned checkout. **FIRST VIEWPORT:** compact brand and refresh, “Wybierz swój seans.”, cache status, day picker, search and film rows. **FORM:** portrait image at left, complete title and times at right; phone navigation becomes a tablet rail.
+The preserved direction contract is: **THESIS:** choose a film and its exact screening quickly from a locally saved schedule. **OWN-WORLD:** printed pocket program translated into Literata, warm ivory, burgundy and native sans. **STORY:** saved status → date → film → time → focused screening sheet → source-owned checkout. **FIRST VIEWPORT (cached):** compact cinema logo and refresh, “Wybierz swój seans.”, cache status, day picker, search and film rows. **FORM:** portrait image at left, complete title and times at right; phone navigation becomes a tablet rail.
 
 Decision evidence: concept seed `86bd95f5`, direction/operate, successfully retried through the API with approved pool `c3b204a1eed6`, assigned grounded candidate 6 (pocket program). Grounded alternatives were cinema gazette, velvet poster gallery, Swiss poster grid, tram timetable, filmstrip archive, pocket program and film-club ledger. Poster gallery reduced schedule density; departure table repeated films. This record preserves the approved choice, not additional shipped variants.
 
@@ -146,7 +146,7 @@ Literata supplies the literary program voice. Native sans keeps metadata, contro
 
 ### Hierarchy
 
-- **Headline large:** main page heading; explicit semibold. The compact “charlie” wordmark locally overrides its font size to 34sp and retains the heading's line height.
+- **Headline large:** main page heading; explicit semibold. The header uses the official cinema mark rather than a typed wordmark.
 - **Headline small:** film detail and screening sheet title; other properties inherit Material headlineSmall.
 - **Title large:** section and empty-state headings and the selected room in the screening sheet; explicit semibold. Date numerals locally use this role with native sans.
 - **Title medium:** film titles, date heading, detail toolbar and room names in detail screening rows; explicit semibold.
@@ -186,7 +186,7 @@ The selected day uses primary/on-primary; idle days use surface-container-low/on
 
 ### Program rows and posters
 
-Rows share the app surface, with a top divider and no raised-card shell. Poster cropping is centered with ContentScale.Crop. The same title/metadata/room/time order persists in saved films, with a date prefix on saved screening times and up to three upcoming screenings per room, preserving every available room. Known source limitation: some full poster URLs return HTTP 404. Poster first requests the source poster, then switches to the source thumbnail on failure or missing URL. If neither image loads, the tonal backing and outlined theater icon remain; no fabricated art is generated or shipped.
+Rows share the app surface, with a top divider and no raised-card shell. Poster cropping is centered with ContentScale.Crop. The same title/metadata/room/time order persists in saved films, with a date prefix on saved screening times and up to three upcoming screenings per room, preserving every available room. Known source limitation: some full poster URLs return HTTP 404. Poster first requests the source poster, then a ticketing-system image matched by event, date, time and title. Tiny legacy thumbnails are not enlarged. If neither image loads, the tonal backing and outlined theater icon remain; no fabricated art is generated or shipped.
 
 ### Search
 
@@ -200,13 +200,19 @@ A full-width, single-line outlined field uses the search corner token, a search 
 
 A factual label pairs cache age or connection state with an outlined status icon; refresh shows a small progress indicator. Errors retain cached content and offer retry. Detail screening rows use primary titleMedium room names above the date and time. The standard Material modal sheet lists the film and date/time, then emphasizes the selected room with primary titleLarge before the online-purchase explanation and checkout action. Keep offline and missing-link states explicit.
 
+### Welcome and cinema identity
+
+Read local cache before choosing a first-run surface; returning cached users see their program directly. With no cache, use the same paper surface, official 104dp-high mark, Literata headline, native body text and an honest indeterminate preparation indicator. Center a scrollable column capped at 480dp, with 24dp safe gutters and 32/12dp grouping gaps. No forced duration, invented percentage or blocking animation. Release today immediately after its valid snapshot, including a published empty day; future days continue in the background. First-use failure has an explicit connection/import message and a 52dp-minimum retry action.
+
+The main header uses a 56dp-high official logo, ink-colored for the current theme, with an accessible cinema name. `CinemaLogo.kt` displays the mark region from the original bundled source JPEG, excluding the surrounding website captions at draw time. It samples the bitmap to avoid decoding the full original on each composition. Provenance: [asset notice](NOTICE.md). The adaptive launcher icon is a separate crisp vector bowler-hat/moustache motif on paper, with a monochrome variant on Android 13+. It is an app icon, not a replacement cinema logo.
+
 ## Do's and Don'ts
 
 ### Do:
 - **Do** use Literata for the recorded heading roles and native sans for body, controls and date numerals.
 - **Do** preserve full Polish titles, localized dates and explicit action labels.
 - **Do** expose room names before time selection, preserve all room groups in saved-film previews and repeat the selected room before checkout.
-- **Do** keep source imagery at a 2:3 ratio and fall back to the source thumbnail when a poster fails.
+- **Do** keep source imagery at a 2:3 ratio and use the verified ticket image when the primary poster fails.
 - **Do** retain 8dp spacing between wrapped screening buttons and a minimum 48dp screening target.
 - **Do** distinguish unpublished days, empty search, first download, cached content and connection errors.
 

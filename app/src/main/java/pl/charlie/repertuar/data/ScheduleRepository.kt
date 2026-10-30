@@ -46,11 +46,12 @@ class ScheduleRepository(private val directory: File, private val source: Cinema
                         val films = current.films.toMutableMap()
                         day.films.forEach { incoming ->
                             val old = films[incoming.id]
-                            films[incoming.id] = if (old?.detailsFetched == true) incoming.copy(
+                            val merged = incoming.copy(ticketPosterUrl = old?.ticketPosterUrl.orEmpty())
+                            films[incoming.id] = if (old?.detailsFetched == true) merged.copy(
                                 description = old.description, director = old.director.ifBlank { incoming.director },
                                 durationMinutes = old.durationMinutes.takeIf { it > 0 } ?: incoming.durationMinutes,
                                 detailsFetched = true,
-                            ) else incoming
+                            ) else merged
                         }
                         val days = (current.days + (date to day)).filterKeys { !it.isBefore(start.minusDays(1)) && it.isBefore(start.plusDays(14)) }
                         val retained = days.values.flatMap { it.films.map(Film::id) }.toSet() + current.savedIds
@@ -73,10 +74,26 @@ class ScheduleRepository(private val directory: File, private val source: Cinema
             try {
                 val enriched = source.details(film)
                 update { current ->
-                    if (film.id !in current.films) current else current.copy(films = current.films + (film.id to enriched))
+                    val latest = current.films[film.id]
+                    if (latest == null) current else current.copy(films = current.films +
+                        (film.id to enriched.copy(ticketPosterUrl = latest.ticketPosterUrl)))
                 }
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (_: Exception) { /* Metadata failure never invalidates a usable schedule. */ }
+        }
+    }
+
+    suspend fun enrichPosters() = withContext(Dispatchers.IO) {
+        for (day in library.value.days.values.sortedBy { it.date }) {
+            if (!library.value.needsPosters(day)) continue
+            try {
+                val posters = source.posters(day).mapValues { SourceLinks.poster(it.value) }.filterValues { it.isNotBlank() }
+                if (posters.isEmpty()) continue
+                update { current -> current.copy(films = current.films.mapValues { (id, film) ->
+                    posters[id]?.let { film.copy(ticketPosterUrl = it) } ?: film
+                }) }
+            } catch (cancelled: CancellationException) { throw cancelled }
+            catch (_: Exception) { /* Optional imagery cannot invalidate the schedule. */ }
         }
     }
 

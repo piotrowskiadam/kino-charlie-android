@@ -15,6 +15,7 @@ object LibraryJson {
             put("duration", film.durationMinutes); put("director", film.director)
             put("description", film.description); put("detailsFetched", film.detailsFetched)
             put("thumbnail", film.thumbnailUrl)
+            put("ticketPoster", film.ticketPosterUrl)
         } }))
         put("days", JSONArray(library.days.values.map { day -> JSONObject().apply {
             put("date", day.date.toString()); put("fetchedAt", day.fetchedAt)
@@ -33,7 +34,8 @@ object LibraryJson {
             Film(film.getString("id"), film.getString("title"), film.getString("source"),
                 film.optString("poster"), film.optString("genre"), film.optString("production"),
                 film.optInt("duration"), film.optString("director"), film.optString("description"),
-                film.optBoolean("detailsFetched"), film.optString("thumbnail"))
+                film.optBoolean("detailsFetched"), film.optString("thumbnail"),
+                SourceLinks.poster(film.optString("ticketPoster")))
         }.associateBy { it.id }
         val days = root.getJSONArray("days").objects().map { day ->
             val date = LocalDate.parse(day.getString("date"))

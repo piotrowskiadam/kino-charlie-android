@@ -19,8 +19,10 @@ class LiveImportTest {
         val result = repository.refresh(today, 14)
         assertTrue("No live schedule days imported", result.updatedDays > 0)
         assertTrue("No published screenings found", repository.library.value.days.values.any { it.screenings.isNotEmpty() })
+        repository.enrichPosters()
         repository.enrichFilms()
         println("LIVE IMPORT: ${result.updatedDays} days; ${repository.library.value.films.size} films; " +
-            "${repository.library.value.days.values.sumOf { it.screenings.size }} screenings")
+            "${repository.library.value.days.values.sumOf { it.screenings.size }} screenings; " +
+            "${repository.library.value.films.values.count { it.ticketPosterUrl.isNotBlank() }} supplemental posters")
     }
 }

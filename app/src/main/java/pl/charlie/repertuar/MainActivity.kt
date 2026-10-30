@@ -27,11 +27,12 @@ class MainActivity : ComponentActivity() {
             val error by model.error.collectAsStateWithLifecycle()
             val online by model.online.collectAsStateWithLifecycle()
             val today by model.today.collectAsStateWithLifecycle()
+            val startup by model.startup.collectAsStateWithLifecycle()
             LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { model.onResume() }
             CharlieTheme {
                 CharlieApp(library, refreshing, error, online, model::refresh, model::save,
                     { screening -> SourceLinks.booking(screening.bookingUrl).takeIf { it.isNotBlank() }?.let(::open) },
-                    ::open, today)
+                    ::open, today, startup)
             }
         }
     }

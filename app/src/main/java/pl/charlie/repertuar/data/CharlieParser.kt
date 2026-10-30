@@ -9,6 +9,28 @@ import org.jsoup.Jsoup
 import org.json.JSONObject
 
 class CharlieParser {
+    fun ticketPosters(html: String, day: ScheduleDay): Map<String, String> {
+        val document = Jsoup.parse(html, "https://bilety.charlie.pl/MSI/mvc/pl")
+        val dateLabel = day.date.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("pl")))
+        fun titleKey(value: String) = value.lowercase(Locale.forLanguageTag("pl"))
+            .replace(Regex("[^\\p{L}\\p{N}]"), "")
+        val result = mutableMapOf<String, String>()
+        for (screening in day.screenings) {
+            val eventId = Regex("[?&]event_id=(\\d+)(?:&|$)")
+                .find(SourceLinks.booking(screening.bookingUrl))?.groupValues?.get(1) ?: continue
+            val film = day.films.firstOrNull { it.id == screening.filmId } ?: continue
+            for (link in document.select("a[data-event=$eventId]")) {
+                if (link.text().trim().padStart(5, '0') != screening.time ||
+                    !link.attr("aria-label").replace('\u00A0', ' ').contains(dateLabel)) continue
+                val card = link.closest(".movies-movie__single") ?: continue
+                if (titleKey(card.selectFirst(".movies-movie__single__title")?.text().orEmpty()) != titleKey(film.title)) continue
+                val poster = SourceLinks.poster(card.selectFirst("img[src]")?.absUrl("src").orEmpty())
+                if (poster.isNotBlank()) result[film.id] = poster
+            }
+        }
+        return result
+    }
+
     fun parseDetails(html: String, film: Film): Film {
         val document = Jsoup.parse(html, film.sourceUrl)
         require(document.select("h1.duzytytul").any { it.text() == film.title }) { "Unexpected film page" }

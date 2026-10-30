@@ -29,7 +29,7 @@ The user also approves https://bilety.charlie.pl/MSI/mvc/pl as a supplemental in
 - Native schedule browsing, date selection, film details, saved films and bottom navigation.
 - Room name is a primary screening-choice attribute: display it visibly with the available times on the schedule and saved-film list, in film details and before opening checkout. Equal times in different rooms remain distinct choices.
 - Quiet background synchronization and local persistence, fetching up to 14 days ahead where the cinema publishes screenings.
-- Uniform poster presentation; prefer source posters for MVP, without requiring third-party API credentials.
+- Uniform poster presentation using the main cinema poster, then a ticketing-system image matched by exact event, date, time and title. Do not enlarge tiny legacy thumbnails. No third-party API credentials.
 - Filmweb link should identify whether it opens search rather than a verified film page.
 - No account, custom backend or payment processing in this app.
 - Unofficial project; do not imply endorsement by the cinema.
@@ -41,7 +41,7 @@ Public HTML captured on 2026-10-30 is retained in `app/src/test/resources/schedu
 
 ## Product Principles
 
-- Show cached content immediately.
+- Show cached content immediately. On first use, prepare today behind a brief welcome surface, then continue future days in the background without an artificial delay.
 - Preserve useful local data when network refresh fails.
 - Never invent screenings, availability or ticket prices.
 - Keep choosing a screening separate from the online payment flow.

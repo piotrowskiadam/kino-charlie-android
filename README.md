@@ -1,29 +1,79 @@
+<p align="center"><img src="docs/branding/app-icon.svg" width="88" alt="Ikona aplikacji: melonik i wąsik"></p>
+
 # Charlie · repertuar
 
-Nieoficjalna aplikacja Android do repertuaru Kina Charlie w Łodzi. Kotlin, Jetpack Compose, Material 3. Android 8.0+ (API 26). Bez konta i serwera pośredniczącego.
+**Kino Charlie w Łodzi, wygodnie w telefonie.** Nieoficjalna aplikacja Android: wybierz film, sprawdź salę i godzinę, a potem przejdź do kasy kina.
 
-## Funkcje
+Kotlin · Jetpack Compose · Material 3 · Android 8.0+
 
-- wybór dnia z 14 kolejnych terminów, wyszukiwanie polskich tytułów bez konieczności wpisywania znaków diakrytycznych;
-- prawdziwe plakaty, metadane i opis filmu; godziny pogrupowane pod wyraźnymi nazwami sal;
-- zapisane filmy i lokalny repertuar dostępne po ponownym uruchomieniu bez sieci;
-- atomowy zapis cache, zachowanie danych po błędzie importu;
-- odświeżanie w tle przez WorkManager co 6 godzin, gdy system pozwoli; ręczne odświeżanie;
-- źródłowy zakup biletu w karcie przeglądarki, wyszukiwanie w Filmweb;
-- tryb jasny/ciemny i adaptacyjna nawigacja na większych ekranach.
+<p align="center">
+  <img src="docs/screenshots/0.1.2/repertuar.png" width="260" alt="Dzisiejszy repertuar: logo kina, plakaty i godziny pod nazwami sal">
+  <img src="docs/screenshots/0.1.2/szczegoly.png" width="260" alt="Szczegóły filmu z plakatem i opisem">
+</p>
 
-Pierwsze uruchomienie wymaga internetu. Cache obejmuje faktycznie opublikowane seanse, nie gwarantowane pełne 14 dni. Dostępność miejsc i ceny potwierdza kasa kina. Po wymuszeniu zatrzymania aplikacji Android wstrzymuje zadania do ponownego otwarcia aplikacji.
+## Wypróbuj aplikację
 
-## Budowanie
+**[Pobierz APK 0.1.2](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.2/Charlie-MVP-0.1.2.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.2)
 
-Przygotowanie JDK/SDK, polecenia budowania i testów oraz przekazywanie APK opisuje [przewodnik developmentu](docs/DEVELOPMENT.md).
+MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.2.md).
 
-## Dokumentacja
+## Film, godzina i właściwa sala
 
-[Indeks dokumentacji i zasady jej utrzymywania](docs/README.md) prowadzi do [architektury](docs/ARCHITECTURE.md), [systemu designu](DESIGN.md), [produktu](PRODUCT.md), decyzji architektonicznych i raportów QA. Dokumenty aktualizujemy razem ze zmianami kodu. [Raport MVP](docs/QA.md) zachowuje wyniki testów konkretnego APK 0.1.0.
+- Repertuar na dziś i do 13 kolejnych dni, o ile kino opublikowało seanse.
+- Godziny pogrupowane pod **wyraźną nazwą sali**. Ta sama godzina w różnych salach to osobne przyciski.
+- Wyszukiwanie także bez polskich znaków, opisy filmów i zapisane ulubione.
+- Plakaty kina oraz zapasowe obrazy z jego systemu biletowego, powiązane z konkretnym seansem.
+- Jawnie opisane wyszukiwanie tytułu w Filmweb.
 
-## Źródła i zależności
+<p align="center"><img src="docs/screenshots/0.1.2/wybor-sali.png" width="260" alt="Wybrany seans z wyróżnioną nazwą sali przed przejściem do kasy"></p>
 
-Repertuar, opisy i plakaty: [Kino Charlie](https://www.charlie.pl/). [Filmweb](https://www.filmweb.pl/) jest otwierany jako wyszukiwarka; aplikacja nie pobiera ocen i nie deklaruje zweryfikowanych dopasowań filmów. Font [Literata](https://github.com/google/fonts/tree/main/ofl/literata), SIL OFL — licencja w `docs/Literata-OFL.txt`.
+Zakup otwiera **dokładny link wybranego seansu** w karcie przeglądarki. Wybór miejsc, ceny, dostępność i płatność obsługuje strona kina. Aplikacja nie przetwarza płatności.
 
-Dokumentacja: [Android Gradle Plugin 9.2](https://developer.android.com/build/releases/agp-9-2-0-release-notes), [WorkManager](https://developer.android.com/reference/kotlin/androidx/work/CoroutineWorker), [Coil Compose](https://coil-kt.github.io/coil/compose/). Odtwarzalna konfiguracja w plikach Gradle, decyzje w `docs/adr/`.
+## Repertuar zostaje z Tobą
+
+Pierwszy ekran powitalny przygotowuje dzisiejszy program. Gdy jest gotowy, możesz już przeglądać seanse; kolejne dni i zasoby pobierają się dalej w tle. Powitanie nie ma sztucznego czasu oczekiwania.
+
+Później aplikacja pokazuje lokalny cache bez czekania na sieć. Odświeżanie nie blokuje przeglądania, a błąd połączenia zachowuje poprzednie dane. WorkManager odświeża repertuar co sześć godzin, gdy Android pozwoli; dostępne jest też ręczne odświeżanie. Bez konta, reklam i własnego serwera.
+
+<p align="center">
+  <img src="docs/screenshots/0.1.2/powitanie.png" width="260" alt="Pierwsze przygotowanie za ekranem powitalnym z logo kina">
+  <img src="docs/screenshots/0.1.2/ciemny-offline.png" width="260" alt="Zapisany repertuar w ciemnym motywie bez internetu">
+</p>
+
+Interfejs obsługuje jasny i ciemny motyw, powiększanie czcionki, systemowy przycisk Wstecz i nawigację boczną na szerokich ekranach.
+
+## Uruchomienie projektu
+
+Potrzebujesz **pełnego JDK 21**, Android SDK i platformy wymaganej przez `compileSdk` w [app/build.gradle.kts](app/build.gradle.kts). Otwórz projekt w Android Studio lub ustaw `JAVA_HOME` i lokalizację SDK przez `ANDROID_HOME` albo nieśledzony `local.properties`.
+
+```bash
+git clone https://github.com/piotrowskiadam/kino-charlie-android.git
+cd kino-charlie-android
+./gradlew :app:assembleDebug
+```
+
+Bez klucza do bazy filmów i konfiguracji backendu. [Przewodnik developmentu](docs/DEVELOPMENT.md) opisuje środowisko, budowanie wydania i testowanie na urządzeniu.
+
+## Testy
+
+```bash
+./gradlew :app:testDebugUnitTest :app:lintDebug
+# Przy uruchomionym emulatorze lub podłączonym urządzeniu:
+./gradlew :app:connectedDebugAndroidTest
+```
+
+Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.2](docs/qa/2026-10-30-0.1.2.md).
+
+## Architektura i dalszy rozwój
+
+UI obserwuje lokalny katalog przez `StateFlow`. Repozytorium zapisuje każdy poprawny dzień atomowo i udostępnia go od razu. Pobieranie repertuaru, opisów i obrazów jest oddzielone od zakupów w przeglądarce.
+
+- [Dokumentacja](docs/README.md) — mapa projektu i zasady aktualizacji.
+- [Architektura](docs/ARCHITECTURE.md) — moduły, synchronizacja i format zapisu.
+- [Design](DESIGN.md) — zatwierdzony kierunek, tokeny, komponenty i stany.
+- [Produkt](PRODUCT.md) i [specyfikacja MVP](docs/specs/mvp.md) — zakres i kryteria akceptacji.
+- [Źródła i zasoby](NOTICE.md) — pochodzenie logo, plakatów, ikon i fontu.
+
+HTML kina może się zmieniać. Cache obejmuje faktycznie opublikowane seanse. Obrazy MSI mają ograniczoną rozdzielczość; aplikacja nie powiększa małych miniatur głównej strony i nie wymyśla grafiki. Android decyduje o wykonaniu pracy w tle; wymuszone zatrzymanie aplikacji wstrzymuje ją do kolejnego otwarcia.
+
+Dane: [Kino Charlie](https://www.charlie.pl/) i [system biletowy](https://bilety.charlie.pl/MSI/mvc/pl). Projekt nie jest oficjalną aplikacją kina.

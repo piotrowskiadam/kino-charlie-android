@@ -25,9 +25,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import pl.charlie.repertuar.BuildConfig
+import pl.charlie.repertuar.StartupPhase
 import pl.charlie.repertuar.data.*
 import java.time.LocalDate
 import java.time.Instant
@@ -46,7 +46,17 @@ private fun String.searchKey() = Normalizer.normalize(lowercase(Polish).replace(
 @Composable
 fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Boolean,
     onRefresh: () -> Unit, onSave: (String) -> Unit, onBook: (Screening) -> Unit,
-    onOpenUrl: (String) -> Unit, today: LocalDate) {
+    onOpenUrl: (String) -> Unit, today: LocalDate, startupPhase: StartupPhase = StartupPhase.Ready) {
+    if (startupPhase == StartupPhase.CheckingCache) {
+        Surface(Modifier.fillMaxSize().testTag("startup-cache")) {
+            Box(Modifier.safeDrawingPadding(), contentAlignment = Alignment.Center) { CinemaLogo() }
+        }
+        return
+    }
+    if (startupPhase != StartupPhase.Ready && today !in library.days) {
+        FirstRunWelcome(startupPhase == StartupPhase.Failed, online, error, onRefresh)
+        return
+    }
     var tab by rememberSaveable { mutableIntStateOf(0) }
     var selected by rememberSaveable(today.toString()) { mutableStateOf(today.toString()) }
     var query by rememberSaveable { mutableStateOf("") }
@@ -71,7 +81,7 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                     } }, colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface))
                 else Row(Modifier.fillMaxWidth().statusBarsPadding().padding(start = 24.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
                     verticalAlignment = Alignment.CenterVertically) {
-                    Text("charlie", style = MaterialTheme.typography.headlineLarge.copy(fontSize = 34.sp), color = MaterialTheme.colorScheme.primary)
+                    CinemaLogo()
                     Spacer(Modifier.width(16.dp))
                     Text("Łódź", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.weight(1f))
@@ -249,12 +259,15 @@ private fun ErrorNotice(error: String, retry: () -> Unit, refreshing: Boolean) {
 
 @Composable
 private fun Poster(film: Film, modifier: Modifier) {
-    var fallback by remember(film.posterUrl, film.thumbnailUrl) { mutableStateOf(false) }
+    val candidates = remember(film.posterUrl, film.ticketPosterUrl) {
+        film.posterCandidates
+    }
+    var candidate by remember(candidates) { mutableIntStateOf(0) }
     Box(modifier.clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.surfaceContainerHighest), contentAlignment = Alignment.Center) {
         Icon(Icons.Outlined.Theaters, null, Modifier.size(32.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-        AsyncImage(model = if (fallback || film.posterUrl.isBlank()) film.thumbnailUrl else film.posterUrl,
+        AsyncImage(model = candidates.getOrNull(candidate),
             contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.matchParentSize(),
-            onError = { fallback = true })
+            onError = { if (candidate < candidates.size) candidate++ })
     }
 }
 

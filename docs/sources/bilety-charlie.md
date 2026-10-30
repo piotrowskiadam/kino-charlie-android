@@ -6,7 +6,7 @@ Użytkownik wskazał to źródło jako dozwolone uzupełnienie, gdy dane lub str
 
 ## Status w aplikacji
 
-To zweryfikowana możliwość przyszłej integracji. Wersja 0.1.1 nadal importuje katalog przez `CharlieSource` z głównej strony kina; subdomena biletowa obsługuje przekazane przez źródło linki zakupu. Automatyczny importer zapasowy z listy MSI nie został jeszcze wdrożony.
+Od 0.1.2 lista jest wdrożonym źródłem zapasowych obrazów: `CharlieParser.ticketPosters` wiąże event_id, datę, godzinę i tytuł z już zaimportowanym seansem. Katalog, sale, czasy trwania i linki zakupu nadal pochodzą z głównej strony. To nie jest automatyczny importer zapasowy repertuaru. Sprawdzony obraz Lalki ma 260×380 px zarówno z parametrem mode=thumb, jak i bez niego; nie deklarujemy wyższej rozdzielczości.
 
 ## Zaobserwowane dane
 
@@ -31,4 +31,4 @@ Przykład dopasowania: Lalka, 30.10.2026 o 13:45, ma `event_id=97086` zarówno n
 - Ewentualne dołączenie obrazów z subdomeny wymaga jawnej obsługi tego hosta w regułach obrazów. Obecna walidacja adresów katalogu/obrazów dopuszcza `charlie.pl` i `www.charlie.pl`, a `bilety.charlie.pl` jest dopuszczone dla zakupu.
 - Import dodatkowego źródła powinien przejść regresje poprawnego dopasowania seansu/sali/linku, deduplikacji, konfliktów metadanych i zachowania cache przy błędzie.
 
-To jednorazowe rozpoznanie publicznej listy, nie potwierdzenie stabilnego API, pełnego horyzontu 14 dni ani kompletności danych o salach.
+Obserwacje publicznej listy nie potwierdzają stabilnego API, pełnego horyzontu 14 dni ani kompletności danych o salach.

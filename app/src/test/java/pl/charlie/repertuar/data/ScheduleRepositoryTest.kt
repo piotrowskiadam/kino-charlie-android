@@ -3,6 +3,8 @@ package pl.charlie.repertuar.data
 import java.io.IOException
 import java.time.LocalDate
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.launch
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -16,6 +18,49 @@ class ScheduleRepositoryTest {
         "https://bilety.charlie.pl/MSI/Default.aspx?event_id=123")), 1_000L)
     private val offline = object : CinemaSource {
         override suspend fun day(date: LocalDate): ScheduleDay = throw IOException("offline")
+        override suspend fun posters(day: ScheduleDay): Map<String, String> = throw IOException("offline")
+    }
+
+    @Test fun `today is durable and available before tomorrow finishes downloading`() = runTest {
+        val nextDayStarted = CompletableDeferred<Unit>()
+        val releaseTomorrow = CompletableDeferred<Unit>()
+        val tomorrow = date.plusDays(1)
+        val source = object : CinemaSource {
+            override suspend fun day(date: LocalDate): ScheduleDay {
+                if (date == tomorrow) { nextDayStarted.complete(Unit); releaseTomorrow.await() }
+                return day.copy(date = date, screenings = day.screenings.map { it.copy(date = date) })
+            }
+        }
+        val directory = temporary.newFolder()
+        val repository = ScheduleRepository(directory, source)
+        val refresh = launch { repository.refresh(date, 2) }
+        nextDayStarted.await()
+        assertEquals("18:00", repository.library.value.days[date]?.screenings?.single()?.time)
+        assertFalse(repository.library.value.days.containsKey(date.plusDays(1)))
+        val reopened = ScheduleRepository(directory, offline)
+        reopened.load()
+        assertEquals("Studyjna", reopened.library.value.days[date]?.screenings?.single()?.room)
+        releaseTomorrow.complete(Unit)
+        refresh.join()
+        assertTrue(repository.library.value.days.containsKey(date.plusDays(1)))
+    }
+
+    @Test fun `supplemental poster survives refresh restart and failed imagery while keeping exact screening`() = runTest {
+        val image = "https://bilety.charlie.pl/MSI/ImageData.ashx?id=2980&mode=thumb"
+        val directory = temporary.newFolder()
+        val source = object : CinemaSource {
+            override suspend fun day(date: LocalDate) = day
+            override suspend fun posters(day: ScheduleDay) = mapOf("123" to image)
+        }
+        val repository = ScheduleRepository(directory, source)
+        repository.refresh(date, 1)
+        repository.enrichPosters()
+        repository.refresh(date, 1)
+        val reopened = ScheduleRepository(directory, offline)
+        reopened.load()
+        reopened.enrichPosters()
+        assertEquals(image, reopened.library.value.films["123"]?.ticketPosterUrl)
+        assertEquals(day.screenings, reopened.library.value.days[date]?.screenings)
     }
 
     @Test fun `schedule and bookmarks survive closing app and reopening without network`() = runTest {

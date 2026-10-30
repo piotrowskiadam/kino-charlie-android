@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.Assert.assertEquals
+import pl.charlie.repertuar.StartupPhase
 import pl.charlie.repertuar.data.*
 import java.time.LocalDate
 
@@ -14,6 +15,67 @@ class CharlieInteractionsTest {
     private val today = LocalDate.parse("2026-10-30")
     private val film = Film("one", "Lalka", "https://www.charlie.pl/", genre = "dramat", durationMinutes = 162)
     private val second = Film("two", "Pieśni lasu", "https://www.charlie.pl/", genre = "dokumentalny")
+
+    @Test fun firstLaunchReleasesTodayWhileFutureDaysAreStillPreparing() {
+        val library = mutableStateOf(Library())
+        compose.setContent {
+            CharlieTheme {
+                CharlieApp(library.value, true, null, true, {}, {}, {}, {}, today, StartupPhase.Preparing)
+            }
+        }
+        compose.onNodeWithTag("startup-welcome").assertIsDisplayed()
+        compose.onNodeWithTag("tab-schedule").assertDoesNotExist()
+        compose.runOnIdle {
+            library.value = Library(films = mapOf("one" to film), days = mapOf(today to ScheduleDay(
+                today, listOf(film), listOf(Screening("one", today, "13:45", "Studyjna")), 1_000L)))
+        }
+        compose.onNodeWithTag("startup-welcome").assertDoesNotExist()
+        compose.onNodeWithTag("film-one").assertExists()
+        compose.onNodeWithTag("room-one-Studyjna", useUnmergedTree = true).assertTextEquals("Sala Studyjna")
+        compose.onNodeWithTag("date-$today").assertIsSelected()
+        compose.onNodeWithTag("date-${today.plusDays(1)}").performClick()
+        compose.onNodeWithText("Pobieramy repertuar").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test fun firstUseOfflineExplainsConnectionAndRetryRestartsPreparation() {
+        val phase = mutableStateOf(StartupPhase.Failed)
+        val online = mutableStateOf(false)
+        compose.setContent { CharlieTheme {
+            CharlieApp(Library(), false, null, online.value, { phase.value = StartupPhase.Preparing }, {}, {}, {}, today, phase.value)
+        } }
+        compose.onNodeWithText("Na pierwszy repertuar potrzebujesz internetu.", substring = true).assertIsDisplayed()
+        compose.runOnIdle { online.value = true }
+        compose.onNodeWithText("Spróbuj ponownie").performClick()
+        compose.onNodeWithText("Przygotowujemy Twój repertuar…").assertIsDisplayed()
+        compose.onNodeWithText("Spróbuj ponownie").assertDoesNotExist()
+    }
+
+    @Test fun aValidEmptyTodayExitsWelcomeAndExplainsThatThereAreNoScreenings() {
+        val library = Library(days = mapOf(today to ScheduleDay(today, emptyList(), emptyList(), 1_000L)))
+        compose.setContent { CharlieTheme {
+            CharlieApp(library, false, null, true, {}, {}, {}, {}, today, StartupPhase.Preparing)
+        } }
+        compose.onNodeWithTag("startup-welcome").assertDoesNotExist()
+        compose.onNodeWithText("Jeszcze bez seansów").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test fun localCacheIsCheckedBeforeWelcomeAndCachedOfflineLaunchGoesStraightToProgram() {
+        val phase = mutableStateOf(StartupPhase.CheckingCache)
+        val library = mutableStateOf(Library())
+        compose.setContent { CharlieTheme {
+            CharlieApp(library.value, false, null, false, {}, {}, {}, {}, today, phase.value)
+        } }
+        compose.onNodeWithTag("startup-cache").assertIsDisplayed()
+        compose.onNodeWithTag("startup-welcome").assertDoesNotExist()
+        compose.runOnIdle {
+            library.value = Library(films = mapOf("one" to film), days = mapOf(today to ScheduleDay(
+                today, listOf(film), listOf(Screening("one", today, "13:45", "Studyjna")), 1_000L)))
+            phase.value = StartupPhase.Ready
+        }
+        compose.onNodeWithTag("startup-welcome").assertDoesNotExist()
+        compose.onNodeWithTag("film-one").assertExists()
+        compose.onNodeWithContentDescription("Kino-Galeria Charlie").assertIsDisplayed()
+    }
 
     private fun launch(online: Boolean = false, onBook: (Screening) -> Unit = {}, todayState: State<LocalDate>? = null,
         multipleRooms: Boolean = false) {

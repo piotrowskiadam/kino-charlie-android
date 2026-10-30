@@ -33,6 +33,9 @@ Wszystkie ścieżki Kotlin poniżej znajdują się w `app/src/main/java/pl/charl
 | [CharlieViewModel.kt](../app/src/main/java/pl/charlie/repertuar/CharlieViewModel.kt) | Stan odświeżania, komunikaty błędów, łączność i bieżąca data kina; obsługa intencji UI |
 | [CharlieApplication.kt](../app/src/main/java/pl/charlie/repertuar/CharlieApplication.kt) | Składanie zależności, wspólne repozytorium i ImageLoader, rejestracja pracy w tle; klasy SyncWorker i AssetsWorker |
 | [ui/CharlieApp.kt](../app/src/main/java/pl/charlie/repertuar/ui/CharlieApp.kt) | Ekrany, lokalny stan nawigacji, wybór daty, wyszukiwanie, szczegóły i wybór seansu |
+| [StartupPhase.kt](../app/src/main/java/pl/charlie/repertuar/StartupPhase.kt) | Stan decyzji o pierwszym ekranie, oddzielony od trwałego katalogu |
+| [ui/FirstRunWelcome.kt](../app/src/main/java/pl/charlie/repertuar/ui/FirstRunWelcome.kt) | Przygotowanie pierwszego repertuaru i odzyskanie po błędzie |
+| [ui/CinemaLogo.kt](../app/src/main/java/pl/charlie/repertuar/ui/CinemaLogo.kt) | Lokalny znak kina, obszar źródłowy i dopasowanie do motywu |
 | [ui/CharlieTheme.kt](../app/src/main/java/pl/charlie/repertuar/ui/CharlieTheme.kt) | Wykonywalne definicje kolorów i typografii |
 | [data/Models.kt](../app/src/main/java/pl/charlie/repertuar/data/Models.kt) | Film, Screening, ScheduleDay i Library |
 | [data/ScheduleRepository.kt](../app/src/main/java/pl/charlie/repertuar/data/ScheduleRepository.kt) | Wspólny odczyt/zapis katalogu, odświeżanie, uzupełnianie opisów i zakładki |
@@ -42,9 +45,9 @@ Wszystkie ścieżki Kotlin poniżej znajdują się w `app/src/main/java/pl/charl
 
 ## Odczyt i odświeżanie
 
-Po wznowieniu `MainActivity` wywołuje `onResume()` ViewModelu. Repozytorium ładuje plik w `Dispatchers.IO` i publikuje `Library` przez `StateFlow`. Odczyt pliku jest wykonywany raz na instancję repozytorium. UI obserwuje dane, zamiast czekać na zakończenie pobierania.
+Po wznowieniu `MainActivity` wywołuje `onResume()` ViewModelu. Repozytorium ładuje plik w `Dispatchers.IO` i publikuje `Library` przez `StateFlow`. Odczyt pliku jest wykonywany raz na instancję repozytorium. UI obserwuje dane, zamiast czekać na zakończenie pobierania. `StartupPhase` rozróżnia odczyt cache, pierwsze przygotowanie, gotowy katalog i błąd. Po lokalnym odczycie dowolny zachowany katalog od razu otwiera program. Przy pustym cache ekran powitalny ustępuje po trwałym zapisie dzisiejszego dnia, również bez seansów; dalszy import nie blokuje nawigacji. Jeśli sieć wraca po błędzie pierwszego przygotowania, zmiana łączności ponawia próbę. Przycisk ponowienia pozostaje dostępną drogą odzyskania po błędzie. Nie zapisujemy redundantnej flagi onboardingu: istniejący katalog jest dowodem gotowości.
 
-ViewModel aktualizuje datę według `Europe/Warsaw`. Odświeżenie uruchamia, jeśli najnowszy zapis katalogu ma ponad sześć godzin albo brakuje dzisiejszego dnia. Ręczne odświeżenie używa tej samej ścieżki. Zmieniona data przekazana do Compose resetuje wybór dnia przez klucz `rememberSaveable`.
+ViewModel aktualizuje datę według `Europe/Warsaw`. Odświeżenie uruchamia, jeśli najnowszy zapis katalogu ma ponad sześć godzin albo brakuje dzisiejszego dnia. Ręczne odświeżenie używa tej samej ścieżki. Świeży cache ze starszej wersji również uruchamia uzupełnianie brakujących plakatów (raz na ViewModel), bez oczekiwania na sześciogodzinny termin odświeżenia katalogu. Dni bez seansów z linkiem biletowym nie wywołują zapytań o niemożliwe do dopasowania obrazy. Zmieniona data przekazana do Compose resetuje wybór dnia przez klucz `rememberSaveable`.
 
 `refresh(start, count)` pobiera kolejne daty sekwencyjnie. Każdy poprawny dzień trafia na dysk i do stanu od razu; użytkownik nie czeka na cały zakres. Opisy już pobrane są zachowywane przy scalaniu nowych danych. Błąd dnia pozostawia poprzedni zapis. Jeśli błąd wystąpi przed pierwszym sukcesem, metoda kończy próbę całego zakresu; wtedy `failedDays` opisuje nieuzupełniony zakres, a nie liczbę wykonanych żądań HTTP.
 
@@ -66,19 +69,19 @@ Brak pliku, nieczytelny JSON lub nieobsługiwana wersja daje obecnie pustą bibl
 
 `charlie-schedule` to unikalna praca okresowa WorkManager: sześć godzin, początkowe opóźnienie 20 minut, dostępna sieć i bateria powyżej niskiego poziomu. Polityka `KEEP` zachowuje istniejący harmonogram. Android ustala rzeczywisty moment wykonania.
 
-`SyncWorker` ładuje katalog, odświeża do 14 dat i uzupełnia zasoby. Brak poprawnie odświeżonych dni lub częściowe niepowodzenie powoduje `retry`. Po udanym odświeżeniu z UI aplikacja kolejkuje osobne `charlie-assets`: opisy oraz pobranie obrazów, z wymaganą siecią.
+`SyncWorker` ładuje katalog, odświeża do 14 dat i uzupełnia zasoby. Brak poprawnie odświeżonych dni lub częściowe niepowodzenie powoduje `retry`. Po uzyskaniu pierwszego dzisiejszego dnia i po zakończeniu odświeżenia UI kolejkuje `charlie-assets`: dodatkowe adresy plakatów, opisy oraz obrazy, z wymaganą siecią. `APPEND_OR_REPLACE` wykonuje te prace kolejno, aby końcowa praca uwzględniła również dni, które dopłynęły podczas pierwszej.
 
-Kolejność obrazu: pełny plakat → miniatura źródłowa → widoczny placeholder. UI i prefetch korzystają ze wspólnego ImageLoadera. Część adresów pełnych plakatów zwraca 404; miniatury mają ograniczoną rozdzielczość. `detailsFetched` oznacza pobrany niepusty opis; obecnie poprawnie pobrane opisy nie mają osobnego terminu wygaśnięcia.
+Kolejność obrazu: pełny plakat → obraz systemu biletowego → widoczny placeholder. Nie powiększamy maleńkich miniatur głównej strony. UI i prefetch korzystają ze wspólnego ImageLoadera. Część adresów pełnych plakatów zwraca 404. Sprawdzony obraz MSI ma 260×380 px; to poprawa względem małych miniatur, bez deklaracji jakości HD. `detailsFetched` oznacza pobrany niepusty opis; obecnie poprawnie pobrane opisy nie mają osobnego terminu wygaśnięcia.
 
 ## Kontrakty źródła i zakupu
 
 Parser łączy wiersz HTML zawierający film, salę, godzinę i bilet z odpowiednim `ScreeningEvent`. Dane strukturalne dostarczają m.in. pełny plakat, reżysera i czas trwania. Nagłówek musi odpowiadać żądanej dacie; rozbieżność liczby odczytanych seansów względem danych strukturalnych odrzuca import. Dekodowanie HTTP/meta charset obsługuje starsze ISO-8859-2. HTML pozostaje w warstwie danych i nie jest renderowany jako interfejs aplikacji.
 
-`SourceLinks` dopuszcza HTTPS, właściwy host, brak danych logowania w URL i domyślny port HTTPS. Źródła katalogu/obrazów to `charlie.pl` lub `www.charlie.pl`; zakup to `bilety.charlie.pl`. Dokładny adres seansu pochodzi z importu. ViewModel nie przetwarza płatności. Filmweb jest osobno konstruowanym, jawnie opisanym wyszukiwaniem po tytule.
+`SourceLinks` dopuszcza HTTPS, właściwy host, brak danych logowania w URL i domyślny port HTTPS. Główny katalog i plakaty pochodzą z `charlie.pl` lub `www.charlie.pl`; `bilety.charlie.pl` dostarcza zakup oraz ograniczoną listę i obrazy MSI opisane poniżej. Dokładny adres seansu pochodzi z importu. ViewModel nie przetwarza płatności. Filmweb jest osobno konstruowanym, jawnie opisanym wyszukiwaniem po tytule.
 
 ### Zatwierdzone źródło dodatkowe
 
-Użytkownik dopuścił publiczną listę `bilety.charlie.pl/MSI/mvc/pl` jako źródło uzupełniające. Jej [rozpoznanie i warunki integracji](sources/bilety-charlie.md) opisują dostępne pola, identyfikatory seansów oraz zaobserwowane konflikty. Obecny adapter jej nie importuje. Przed wdrożeniem alternatywnego odczytu trzeba zachować potwierdzone nazwy sal, tożsamość seansu, reguły adresów i ochronę cache przed niepełnymi danymi.
+Użytkownik dopuścił publiczną listę `bilety.charlie.pl/MSI/mvc/pl` jako źródło uzupełniające. Jej [rozpoznanie i warunki integracji](sources/bilety-charlie.md) opisują dostępne pola, identyfikatory seansów oraz zaobserwowane konflikty. Od 0.1.2 adapter pobiera z niej wyłącznie adresy plakatów. Dopasowanie wymaga tego samego event_id, daty, godziny i tytułu. Nie zmienia sal, czasu trwania ani adresów zakupu. Opcjonalny `Film.ticketPosterUrl` jest zapisywany w JSON v1; brak pola w starszym cache oznacza pusty adres. Odświeżenie oraz uzupełnianie opisów zachowują ten adres, także przy równoległych operacjach. `SourceLinks.poster` dopuszcza na subdomenie tylko `/MSI/ImageData.ashx` z numerycznym id i opcjonalnym trybem thumb. Odczyt katalogu dopuszcza tylko konkretną ścieżkę listy i parametr daty; HTTP nie podąża za przekierowaniami. Przed wdrożeniem alternatywnego odczytu trzeba zachować potwierdzone nazwy sal, tożsamość seansu, reguły adresów i ochronę cache przed niepełnymi danymi.
 
 ## Granice zmian i testowania
 

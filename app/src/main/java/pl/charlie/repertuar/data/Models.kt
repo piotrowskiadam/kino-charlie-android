@@ -14,7 +14,10 @@ data class Film(
     val description: String = "",
     val detailsFetched: Boolean = false,
     val thumbnailUrl: String = "",
-)
+    val ticketPosterUrl: String = "",
+) {
+    val posterCandidates: List<String> get() = listOf(posterUrl, ticketPosterUrl).filter { it.isNotBlank() }.distinct()
+}
 
 data class Screening(
     val filmId: String,
@@ -35,6 +38,9 @@ data class Library(
     val savedIds: Set<String> = emptySet(),
 ) {
     val lastUpdated: Long get() = days.values.maxOfOrNull { it.fetchedAt } ?: 0L
+    fun needsPosters(day: ScheduleDay): Boolean = day.screenings.any {
+        it.bookingUrl.isNotBlank() && films[it.filmId]?.ticketPosterUrl.isNullOrBlank()
+    }
     fun screenings(filmId: String): List<Screening> = days.values.flatMap { it.screenings }
         .filter { it.filmId == filmId }.sortedWith(compareBy({ it.date }, { it.time }))
 }
