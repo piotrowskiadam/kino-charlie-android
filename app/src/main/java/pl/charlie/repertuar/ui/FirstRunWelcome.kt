@@ -29,7 +29,7 @@ internal fun FirstRunWelcome(failed: Boolean, online: Boolean, error: String?, r
                         else error ?: "Nie udało się przygotować repertuaru. Spróbuj ponownie.",
                         style = MaterialTheme.typography.bodyMedium)
                     Spacer(Modifier.height(16.dp))
-                    Button(onClick = retry, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+                    ProgramButton(onClick = retry, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
                         Text("Spróbuj ponownie")
                     }
                 } else {

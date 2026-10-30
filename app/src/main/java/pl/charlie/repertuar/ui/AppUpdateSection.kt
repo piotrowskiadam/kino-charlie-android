@@ -30,13 +30,13 @@ internal fun AppUpdateSection(updates: AppUpdateUi, online: Boolean, openUrl: (S
         if (release != null) {
             Text("Dostępna wersja ${release.version}", style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 16.dp))
-            Button(onClick = { updates.download(release) }, enabled = online,
+            ProgramButton(onClick = { updates.download(release) }, enabled = online,
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp).heightIn(min = 52.dp)) {
                 Text("Pobierz aktualizację")
             }
             Text("Otworzymy pobieranie APK w przeglądarce. Otwórz pobrany plik i potwierdź instalację w Androidzie.",
                 style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 8.dp))
-            TextButton(onClick = { openUrl(release.pageUrl) }, enabled = online) { Text("Co nowego w tej wersji") }
+            ProgramTextButton(onClick = { openUrl(release.pageUrl) }, enabled = online) { Text("Co nowego w tej wersji") }
         } else if (state.checkedAt > 0 && state.error == null && !state.checking) {
             Text("Masz aktualną wersję aplikacji.", style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 12.dp))
@@ -51,9 +51,9 @@ internal fun AppUpdateSection(updates: AppUpdateUi, online: Boolean, openUrl: (S
             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp))
         state.error?.let { Text(it, style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp)) }
+            color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(top = 8.dp)) }
         if (!online) Text("Połącz się z internetem, aby sprawdzić lub pobrać aktualizację.",
             style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 12.dp))
-        TextButton(onClick = updates.check, enabled = online && !state.checking) { Text("Sprawdź aktualizacje") }
+        ProgramTextButton(onClick = updates.check, enabled = online && !state.checking) { Text("Sprawdź aktualizacje") }
     }
 }

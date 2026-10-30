@@ -12,24 +12,34 @@ import pl.charlie.repertuar.R
 
 val ProgramSerif = FontFamily(Font(R.font.literata))
 private val Light = lightColorScheme(
-    primary = Color(0xFF742D3A), onPrimary = Color.White,
-    primaryContainer = Color(0xFFF2DDE0), onPrimaryContainer = Color(0xFF52212C),
-    secondary = Color(0xFF705447), secondaryContainer = Color(0xFFF1E8DB),
-    onSecondaryContainer = Color(0xFF42362E), surface = Color(0xFFF8F4EC),
-    onSurface = Color(0xFF28201F), onSurfaceVariant = Color(0xFF665952),
+    primary = Color.Black, onPrimary = Color.White,
+    primaryContainer = Color(0xFF742D3A), onPrimaryContainer = Color.White,
+    secondary = Color.Black, onSecondary = Color.White, secondaryContainer = Color(0xFFF1E8DB),
+    onSecondaryContainer = Color.Black, surface = Color(0xFFF8F4EC),
+    onSurface = Color.Black, onSurfaceVariant = Color.Black,
+    background = Color(0xFFF8F4EC), onBackground = Color.Black,
+    onErrorContainer = Color.Black,
     surfaceContainer = Color(0xFFF1EAE0), surfaceContainerLow = Color(0xFFF5EFE6),
     surfaceContainerHighest = Color(0xFFEDE5DB), outline = Color(0xFF84726B),
     outlineVariant = Color(0xFFDCD0C7), error = Color(0xFFAD2530),
 )
 private val Dark = darkColorScheme(
-    primary = Color(0xFFF0B8C2), onPrimary = Color(0xFF4A1723),
-    primaryContainer = Color(0xFF5D2633), onPrimaryContainer = Color(0xFFFFD9DF),
-    secondary = Color(0xFFD6BAA6), secondaryContainer = Color(0xFF4D4036),
-    onSecondaryContainer = Color(0xFFF2E4D4), surface = Color(0xFF1D1918),
-    onSurface = Color(0xFFF3EAE2), onSurfaceVariant = Color(0xFFCEBEB4),
-    surfaceContainer = Color(0xFF292321), surfaceContainerLow = Color(0xFF241F1D),
-    surfaceContainerHighest = Color(0xFF38302C), outline = Color(0xFFA79890),
-    outlineVariant = Color(0xFF4D413C),
+    primary = Color.White, onPrimary = Color.Black,
+    primaryContainer = Color(0xFFA83E57), onPrimaryContainer = Color.White,
+    secondary = Color.White, onSecondary = Color.Black,
+    secondaryContainer = Color.Black, onSecondaryContainer = Color.White,
+    tertiary = Color.White, onTertiary = Color.Black,
+    tertiaryContainer = Color.Black, onTertiaryContainer = Color.White,
+    background = Color.Black, onBackground = Color.White,
+    surface = Color.Black, onSurface = Color.White, onSurfaceVariant = Color.White,
+    surfaceVariant = Color.Black, surfaceTint = Color.Black,
+    surfaceDim = Color.Black, surfaceBright = Color.Black,
+    surfaceContainerLowest = Color.Black, surfaceContainerLow = Color.Black,
+    surfaceContainer = Color.Black, surfaceContainerHigh = Color.Black,
+    surfaceContainerHighest = Color.Black,
+    inverseSurface = Color.Black, inverseOnSurface = Color.White, inversePrimary = Color.White,
+    error = Color.White, onError = Color.Black, errorContainer = Color.Black, onErrorContainer = Color.White,
+    outline = Color(0xFF999999), outlineVariant = Color(0xFF444444), scrim = Color.Black,
 )
 
 @Composable

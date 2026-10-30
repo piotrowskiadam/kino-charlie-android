@@ -96,8 +96,8 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                     destinations.forEachIndexed { index, destination ->
                         NavigationBarItem(selected = tab == index, onClick = { tab = index },
                             icon = { DestinationIcon(destination, updates.state.available != null) }, label = { Text(destination.label) },
-                            colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary,
-                                selectedTextColor = MaterialTheme.colorScheme.primary, indicatorColor = MaterialTheme.colorScheme.primaryContainer),
+                            colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                selectedTextColor = MaterialTheme.colorScheme.onSurface, indicatorColor = MaterialTheme.colorScheme.primaryContainer),
                             modifier = Modifier.testTag(destination.tag))
                     }
                 }
@@ -108,7 +108,9 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                     Spacer(Modifier.height(16.dp))
                     destinations.forEachIndexed { index, destination -> NavigationRailItem(
                         selected = tab == index, onClick = { tab = index }, icon = { DestinationIcon(destination, updates.state.available != null) },
-                        label = { Text(destination.label) }, modifier = Modifier.testTag(destination.tag)) }
+                        label = { Text(destination.label) }, modifier = Modifier.testTag(destination.tag),
+                        colors = NavigationRailItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            selectedTextColor = MaterialTheme.colorScheme.onSurface, indicatorColor = MaterialTheme.colorScheme.primaryContainer)) }
                 }
                 if (detail != null) {
                     FilmDetails(detail, library, today, onOpenUrl, { booking = it }, onRefresh)
@@ -141,8 +143,8 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                                     items(14, key = { today.plusDays(it.toLong()).toString() }) { offset ->
                                         val candidate = today.plusDays(offset.toLong())
                                         val active = date == candidate
-                                        Surface(color = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerLow,
-                                            contentColor = if (active) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                                        Surface(color = if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerLow,
+                                            contentColor = if (active) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
                                             shape = RoundedCornerShape(12.dp), modifier = Modifier.widthIn(min = 60.dp)
                                                 .testTag("date-$candidate").semantics { this.selected = active }
                                                 .clickable { selected = candidate.toString() }) {
@@ -205,7 +207,7 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
     }
     booking?.let { screening ->
         val film = library.films[screening.filmId]
-        ModalBottomSheet(onDismissRequest = { booking = null }, containerColor = MaterialTheme.colorScheme.surface) {
+        ModalBottomSheet(onDismissRequest = { booking = null }, containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
             Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 24.dp).verticalScroll(rememberScrollState())) {
                 Text(film?.title.orEmpty(), style = MaterialTheme.typography.headlineSmall)
                 Text("${screening.date.format(DateLabel).sentenceCase()} · ${screening.time}",
@@ -216,13 +218,13 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                 if (screening.version.isNotBlank()) Text(screening.version, style = MaterialTheme.typography.bodyMedium)
                 Text(if (online) "Wybór miejsc i płatność odbędą się na stronie Kina Charlie. Ceny i dostępność sprawdzisz w kasie online."
                     else "Do zakupu biletu potrzebujesz internetu.", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 20.dp))
-                Button(onClick = { booking = null; onBook(screening) }, enabled = online && SourceLinks.booking(screening.bookingUrl).isNotEmpty(),
+                ProgramButton(onClick = { booking = null; onBook(screening) }, enabled = online && SourceLinks.booking(screening.bookingUrl).isNotEmpty(),
                     modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
                     Icon(Icons.Outlined.ConfirmationNumber, null, Modifier.size(20.dp)); Spacer(Modifier.width(10.dp)); Text("Przejdź do kasy kina")
                 }
                 if (screening.bookingUrl.isBlank()) Text("Kino nie udostępniło linku do zakupu tego seansu.",
                     style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 12.dp))
-                TextButton(onClick = { booking = null }, modifier = Modifier.align(Alignment.CenterHorizontally)) { Text("Wróć do przeglądania") }
+                ProgramTextButton(onClick = { booking = null }, modifier = Modifier.align(Alignment.CenterHorizontally)) { Text("Wróć do przeglądania") }
             }
         }
     }
@@ -261,7 +263,7 @@ private fun ErrorNotice(error: String, retry: () -> Unit, refreshing: Boolean) {
     Surface(color = MaterialTheme.colorScheme.errorContainer, shape = RoundedCornerShape(12.dp), modifier = Modifier.padding(bottom = 12.dp)) {
         Column(Modifier.padding(12.dp)) {
             Text(error, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onErrorContainer)
-            TextButton(onClick = retry, enabled = !refreshing) { Text("Spróbuj ponownie") }
+            ProgramTextButton(onClick = retry, enabled = !refreshing) { Text("Spróbuj ponownie") }
         }
     }
 }
@@ -345,7 +347,7 @@ private fun FilmDetails(film: Film, library: Library, today: LocalDate, openUrl:
                 }
             }
             Text("Link otwiera wyszukiwanie po tytule.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            TextButton(onClick = { openUrl(film.sourceUrl) }) { Text("Film na stronie kina") }
+            ProgramTextButton(onClick = { openUrl(film.sourceUrl) }) { Text("Film na stronie kina") }
             Text("Najbliższe seanse", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 24.dp, bottom = 12.dp))
         }
         val upcoming = library.screenings(film.id).filter { !it.date.isBefore(today) }
@@ -370,17 +372,17 @@ private fun CinemaInfo(library: Library, online: Boolean, refreshing: Boolean, r
         Text("Do zobaczenia w kinie.", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
         Text("Kino-Galeria Charlie", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 32.dp))
         Text("Piotrkowska 203/205\n90-451 Łódź", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 12.dp))
-        Button(onClick = { openUrl("geo:51.7550156,19.458785?q=${Uri.encode("Kino Charlie, Piotrkowska 203/205, Łódź")}") }, modifier = Modifier.padding(top = 20.dp)) {
+        ProgramButton(onClick = { openUrl("geo:51.7550156,19.458785?q=${Uri.encode("Kino Charlie, Piotrkowska 203/205, Łódź")}") }, modifier = Modifier.padding(top = 20.dp)) {
             Icon(Icons.Outlined.Directions, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Wyznacz trasę")
         }
-        TextButton(onClick = { openUrl("tel:+48426360092") }) { Text("Zadzwoń: 42 636 00 92") }
-        TextButton(onClick = { openUrl("https://www.charlie.pl/") }) { Text("Otwórz stronę kina") }
+        ProgramTextButton(onClick = { openUrl("tel:+48426360092") }) { Text("Zadzwoń: 42 636 00 92") }
+        ProgramTextButton(onClick = { openUrl("https://www.charlie.pl/") }) { Text("Otwórz stronę kina") }
         HorizontalDivider(Modifier.padding(vertical = 24.dp))
         Text("Repertuar pod ręką", style = MaterialTheme.typography.titleLarge)
         Text("Zapisujemy do 14 dni repertuaru, opisy i plakaty, gdy kino je udostępni. Aplikacja odświeża dane w tle, gdy pozwalają na to połączenie i ustawienia baterii telefonu.",
             style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 16.dp))
         CacheStatus(library.lastUpdated, refreshing, online)
-        TextButton(onClick = refresh, enabled = !refreshing) { Text("Odśwież teraz") }
+        ProgramTextButton(onClick = refresh, enabled = !refreshing) { Text("Odśwież teraz") }
         Text("Kupno biletu wymaga internetu. Ceny, miejsca i płatność obsługuje strona Kina Charlie.", style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 12.dp))
         HorizontalDivider(Modifier.padding(vertical = 24.dp))
@@ -399,7 +401,7 @@ private fun EmptyState(icon: ImageVector, title: String, description: String, ac
         Text(title, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 16.dp))
         Text(description, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp))
-        if (action != null) TextButton(onClick = onAction, modifier = Modifier.padding(top = 12.dp)) { Text(action) }
+        if (action != null) ProgramTextButton(onClick = onAction, modifier = Modifier.padding(top = 12.dp)) { Text(action) }
     }
 }
 

@@ -34,6 +34,7 @@ The user also approves https://bilety.charlie.pl/MSI/mvc/pl as a supplemental in
 - Quiet app-update checks against the public GitHub release channel, at most daily while the app is used, plus manual checking and an explicit APK download action. Android and the browser handle installation with user confirmation.
 - No account, custom backend or payment processing in this app.
 - Unofficial project; do not imply endorsement by the cinema.
+- Pure black ordinary text in light mode; pure white text and true-black neutral OLED surfaces in dark mode, with readable selected controls and the positive logo plaque.
 - Android 8+ is the implemented minimum; phone is the primary target, with adaptive tablet navigation.
 
 ## Evidence on Hand

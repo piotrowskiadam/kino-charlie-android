@@ -1,38 +1,63 @@
 ---
 name: Charlie — repertuar
-description: Native Android pocket cinema program in warm ivory and burgundy.
+description: Native cinema program with monochrome text, ivory light surfaces and true-black OLED dark surfaces.
 colors:
-  light-primary: '#742D3A'
+  light-primary: '#000000'
   light-on-primary: '#FFFFFF'
-  light-primary-container: '#F2DDE0'
-  light-on-primary-container: '#52212C'
-  light-secondary: '#705447'
+  light-primary-container: '#742D3A'
+  light-on-primary-container: '#FFFFFF'
+  light-secondary: '#000000'
+  light-on-secondary: '#FFFFFF'
   light-secondary-container: '#F1E8DB'
-  light-on-secondary-container: '#42362E'
+  light-on-secondary-container: '#000000'
   light-surface: '#F8F4EC'
-  light-on-surface: '#28201F'
-  light-on-surface-variant: '#665952'
+  light-on-surface: '#000000'
+  light-on-surface-variant: '#000000'
+  light-background: '#F8F4EC'
+  light-on-background: '#000000'
+  light-on-error-container: '#000000'
   light-surface-container: '#F1EAE0'
   light-surface-container-low: '#F5EFE6'
   light-surface-container-highest: '#EDE5DB'
   light-outline: '#84726B'
   light-outline-variant: '#DCD0C7'
   light-error: '#AD2530'
-  dark-primary: '#F0B8C2'
-  dark-on-primary: '#4A1723'
-  dark-primary-container: '#5D2633'
-  dark-on-primary-container: '#FFD9DF'
-  dark-secondary: '#D6BAA6'
-  dark-secondary-container: '#4D4036'
-  dark-on-secondary-container: '#F2E4D4'
-  dark-surface: '#1D1918'
-  dark-on-surface: '#F3EAE2'
-  dark-on-surface-variant: '#CEBEB4'
-  dark-surface-container: '#292321'
-  dark-surface-container-low: '#241F1D'
-  dark-surface-container-highest: '#38302C'
-  dark-outline: '#A79890'
-  dark-outline-variant: '#4D413C'
+  dark-primary: '#FFFFFF'
+  dark-on-primary: '#000000'
+  dark-primary-container: '#A83E57'
+  dark-on-primary-container: '#FFFFFF'
+  dark-secondary: '#FFFFFF'
+  dark-on-secondary: '#000000'
+  dark-secondary-container: '#000000'
+  dark-on-secondary-container: '#FFFFFF'
+  dark-tertiary: '#FFFFFF'
+  dark-on-tertiary: '#000000'
+  dark-tertiary-container: '#000000'
+  dark-on-tertiary-container: '#FFFFFF'
+  dark-background: '#000000'
+  dark-on-background: '#FFFFFF'
+  dark-surface: '#000000'
+  dark-on-surface: '#FFFFFF'
+  dark-on-surface-variant: '#FFFFFF'
+  dark-surface-variant: '#000000'
+  dark-surface-tint: '#000000'
+  dark-surface-dim: '#000000'
+  dark-surface-bright: '#000000'
+  dark-surface-container-lowest: '#000000'
+  dark-surface-container-low: '#000000'
+  dark-surface-container: '#000000'
+  dark-surface-container-high: '#000000'
+  dark-surface-container-highest: '#000000'
+  dark-inverse-surface: '#000000'
+  dark-inverse-on-surface: '#FFFFFF'
+  dark-inverse-primary: '#FFFFFF'
+  dark-error: '#FFFFFF'
+  dark-on-error: '#000000'
+  dark-error-container: '#000000'
+  dark-on-error-container: '#FFFFFF'
+  dark-outline: '#999999'
+  dark-outline-variant: '#444444'
+  dark-scrim: '#000000'
 typography:
   headline-large:
     fontFamily: Literata
@@ -73,8 +98,8 @@ components:
     rounded: '{rounded.r10}'
     padding: 8dp 12dp
   date-selected:
-    backgroundColor: '{colors.light-primary}'
-    textColor: '{colors.light-on-primary}'
+    backgroundColor: '{colors.light-primary-container}'
+    textColor: '{colors.light-on-primary-container}'
     rounded: '{rounded.r12}'
     padding: 10dp 12dp
   date-idle:
@@ -90,8 +115,8 @@ components:
   search:
     rounded: '{rounded.r14}'
   checkout-button:
-    backgroundColor: '{colors.light-primary}'
-    textColor: '{colors.light-on-primary}'
+    backgroundColor: '{colors.light-primary-container}'
+    textColor: '{colors.light-on-primary-container}'
   navigation:
     backgroundColor: '{colors.light-surface-container-low}'
     textColor: '{colors.light-primary}'
@@ -125,19 +150,21 @@ Warm ivory and burgundy set a quiet printed-program character. The frontmatter r
 
 ### Primary
 
-Burgundy (light primary) marks headings, selected dates, screening outlines and actions. Pale rose is the dark primary; its darker on-primary value keeps selected controls readable. The primary-container pair supports navigation selection and Material surfaces.
+Primary and ordinary foreground roles are pure black in light mode and pure white in dark mode. Burgundy primary-container carries selected dates, filled actions and the navigation indicator; its white foreground preserves contrast. Dark burgundy is lightened enough to remain distinct from OLED black. ProgramButton and ProgramTextButton apply this policy consistently, including neutral backgrounds for disabled actions.
 
 ### Secondary
 
-Brown and warm beige secondary roles support restrained Material accents. Their dark-theme counterparts retain the same warm relationship.
+Secondary foregrounds follow the same black/white policy. Light secondary-container remains warm beige; dark neutral containers are black.
 
 ### Neutral
 
-Paper surface and dark ink carry the main program. Surface-container-low supports date tiles and navigation; surface-container-highest backs poster placeholders. On-surface-variant quiets metadata, while outline-variant draws row separators. Outline is the stronger field/control stroke. The explicit light error color is reserved for errors; remaining error roles inherit Material defaults.
+Paper surfaces and pure black text carry the light program; pure black surfaces and white text carry OLED dark mode. Surface-container-low supports date tiles and navigation; surface-container-highest backs poster placeholders. On-surface-variant equals the pure foreground; metadata hierarchy uses size and weight. Outline-variant draws row separators. Outline is the stronger field/control stroke. The explicit light error color is reserved for errors; remaining error roles inherit Material defaults.
 
-**The Selection Rule.** Use filled primary for the selected day and primary-container for the compact navigation indicator; leave film rows on the common surface.
+**The Selection Rule.** Use primary-container/on-primary-container for the selected day, filled actions and compact navigation indicator; leave film rows on the common surface.
 
 ## Typography
+
+**Text color:** ordinary headings, body, metadata and links use #000000 in light mode and #FFFFFF in OLED mode. Inverse white captions on filled controls remain a contrast exception in light mode.
 
 **Display Font:** bundled Literata (`app/src/main/res/font/literata.ttf`, SIL OFL).
 **Body Font:** native Android sans, inherited from Material 3 Typography.
@@ -178,11 +205,11 @@ Posters use the 8dp corner token. Screening outlines use 10dp corners; date tile
 
 ### Buttons
 
-Screening times are outlined primary actions with a 1dp primary stroke, semibold Material labelLarge and the recorded screening padding/corner tokens. Each room's times sit under a visible “Sala <name>” label; the button's accessible name includes the time and room. A time opens a focused modal sheet; the row itself opens film details. Checkout is a full-width Material filled button with a confirmation icon and explicit Polish action, disabled when offline or without a permitted source URL. General external actions use Material buttons, outlined buttons or text buttons as implemented. Android supplies pressed, focus, ripple and disabled states; no custom hover animation is defined.
+Screening times are outlined monochrome actions with a 1dp primary stroke, semibold Material labelLarge and the recorded screening padding/corner tokens. Each room's times sit under a visible “Sala <name>” label; the button's accessible name includes the time and room. A time opens a focused modal sheet; the row itself opens film details. Checkout is a full-width Material filled button with a confirmation icon and explicit Polish action, disabled when offline or without a permitted source URL. General external actions use Material buttons, outlined buttons or text buttons as implemented. Android supplies pressed, focus, ripple and disabled states; no custom hover animation is defined.
 
 ### Date tiles
 
-The selected day uses primary/on-primary; idle days use surface-container-low/on-surface. Compact localized labels sit above native sans date numerals. A semantic selected state accompanies the visible fill change.
+The selected day uses primary-container/on-primary-container; idle days use surface-container-low/on-surface. Compact localized labels sit above native sans date numerals. A semantic selected state accompanies the visible fill change.
 
 ### Program rows and posters
 
@@ -194,7 +221,7 @@ A full-width, single-line outlined field uses the search corner token, a search 
 
 ### Navigation
 
-“Repertuar”, “Zapisane” and “Kino” pair Material outlined icons with Polish labels. Phone navigation rests on surface-container-low with primary selected label/icon and primary-container indicator. The wide rail inherits Material rail item states; do not assume its untouched defaults have the same explicit overrides as the bottom bar.
+“Repertuar”, “Zapisane” and “Kino” pair Material outlined icons with Polish labels. Phone navigation rests on surface-container-low with an on-surface selected label, white selected icon and burgundy primary-container indicator. The wide rail uses the same explicit selection colors.
 
 ### Status and screening sheet
 
@@ -209,6 +236,10 @@ The main header uses a 56dp-high official logo in its original black positive, w
 ### App updates
 
 The Kino destination contains a flat “Aktualizacje aplikacji” section separated by the existing 24dp divider rhythm. Title uses titleLarge; installed version, progress, recovery and browser handoff use native body text. A newer release has primary titleMedium emphasis, a full-width 52dp-minimum download button, release-notes link and manual check. Offline keeps known release information but disables network actions and explains recovery. A small primary badge on Kino has an accessible “Dostępna aktualizacja aplikacji” description on both bottom bar and rail. No modal prompt, forced update or schedule-blocking overlay.
+
+### OLED surfaces
+
+Every dark neutral surface role, background, container tier and tint is #000000. This includes inactive day tiles, navigation, poster backing, field fills and screening sheets; sheet tonal elevation is zero. MainActivity selects explicit black navigation styling and disables Android's navigation contrast scrim; night window resources also start on black. Thin outlines, text, image artwork, active burgundy fills and the white positive-logo plaque are intentional foreground/selection exceptions, not neutral backgrounds. Disabled actions retain pure foreground text; their background, interaction semantics and offline explanations distinguish availability.
 
 ## Do's and Don'ts
 

@@ -7,15 +7,15 @@
 Kotlin · Jetpack Compose · Material 3 · Android 8.0+
 
 <p align="center">
-  <img src="docs/screenshots/0.1.3/repertuar.png" width="260" alt="Dzisiejszy repertuar: logo kina, plakaty i godziny pod nazwami sal">
-  <img src="docs/screenshots/0.1.2/szczegoly.png" width="260" alt="Szczegóły filmu z plakatem i opisem">
+  <img src="docs/screenshots/0.1.5/repertuar.png" width="260" alt="Dzisiejszy repertuar: logo kina, plakaty i godziny pod nazwami sal">
+  <img src="docs/screenshots/0.1.5/szczegoly.png" width="260" alt="Szczegóły filmu z plakatem i opisem">
 </p>
 
 ## Wypróbuj aplikację
 
-**[Pobierz APK 0.1.4](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.4/Charlie-MVP-0.1.4.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.4)
+**[Pobierz APK 0.1.5](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.5/Charlie-MVP-0.1.5.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.5)
 
-MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.4.md).
+MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.5.md).
 
 ## Film, godzina i właściwa sala
 
@@ -25,7 +25,7 @@ MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól 
 - Plakaty kina oraz zapasowe obrazy z jego systemu biletowego, powiązane z konkretnym seansem.
 - Jawnie opisane wyszukiwanie tytułu w Filmweb.
 
-<p align="center"><img src="docs/screenshots/0.1.2/wybor-sali.png" width="260" alt="Wybrany seans z wyróżnioną nazwą sali przed przejściem do kasy"></p>
+<p align="center"><img src="docs/screenshots/0.1.5/wybor-sali.png" width="260" alt="Wybrany seans z wyróżnioną nazwą sali przed przejściem do kasy"></p>
 
 Zakup otwiera **dokładny link wybranego seansu** w karcie przeglądarki. Wybór miejsc, ceny, dostępność i płatność obsługuje strona kina. Aplikacja nie przetwarza płatności.
 
@@ -36,11 +36,11 @@ Pierwszy ekran powitalny przygotowuje dzisiejszy program. Gdy jest gotowy, może
 Później aplikacja pokazuje lokalny cache bez czekania na sieć. Odświeżanie nie blokuje przeglądania, a błąd połączenia zachowuje poprzednie dane. WorkManager odświeża repertuar co sześć godzin, gdy Android pozwoli; dostępne jest też ręczne odświeżanie. Bez konta, reklam i własnego serwera.
 
 <p align="center">
-  <img src="docs/screenshots/0.1.2/powitanie.png" width="260" alt="Pierwsze przygotowanie za ekranem powitalnym z logo kina">
-  <img src="docs/screenshots/0.1.3/ciemny-offline.png" width="260" alt="Zapisany repertuar w ciemnym motywie bez internetu">
+  <img src="docs/screenshots/0.1.5/powitanie.png" width="260" alt="Pierwsze przygotowanie za ekranem powitalnym z logo kina">
+  <img src="docs/screenshots/0.1.5/ciemny-offline.png" width="260" alt="Zapisany repertuar w ciemnym motywie bez internetu">
 </p>
 
-Interfejs obsługuje jasny i ciemny motyw, powiększanie czcionki, systemowy przycisk Wstecz i nawigację boczną na szerokich ekranach.
+Interfejs obsługuje jasny motyw z czarnym tekstem i ciemny motyw OLED z białym tekstem oraz czystą czernią tła, powiększanie czcionki, systemowy przycisk Wstecz i nawigację boczną na szerokich ekranach.
 
 ## Aktualizacje aplikacji
 
@@ -48,7 +48,7 @@ W zakładce **Kino → Aktualizacje aplikacji** sprawdzisz zainstalowaną wersj�
 
 **Pobierz aktualizację** otwiera dokładny APK z tego repozytorium w przeglądarce. Otwórz pobrany plik i potwierdź instalację w Androidzie. Repertuar działa niezależnie od aktualizacji; brak sieci zachowuje poprzednią informację. Wykrywane są zwykłe wydania z właściwym APK, z pominięciem draft i prerelease.
 
-<p align="center"><img src="docs/screenshots/0.1.4/aktualizacje.png" width="260" alt="Sekcja aktualizacji aplikacji w zakładce Kino"></p>
+<p align="center"><img src="docs/screenshots/0.1.5/aktualizacje.png" width="260" alt="Sekcja aktualizacji aplikacji w zakładce Kino"></p>
 
 ## Uruchomienie projektu
 
@@ -70,7 +70,7 @@ Bez klucza do bazy filmów i konfiguracji backendu. [Przewodnik developmentu](do
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.4](docs/qa/2026-10-30-0.1.4.md).
+Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.5](docs/qa/2026-10-30-0.1.5.md).
 
 ## Architektura i dalszy rozwój
 
