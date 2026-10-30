@@ -16,23 +16,11 @@ Pierwsze uruchomienie wymaga internetu. Cache obejmuje faktycznie opublikowane s
 
 ## Budowanie
 
-JDK 21, Android SDK 36 i zaakceptowane licencje. Ustaw `sdk.dir` w lokalnym `local.properties` albo `ANDROID_HOME`. Wrapper pobiera Gradle 9.4.1.
+Przygotowanie JDK/SDK, polecenia budowania i testów oraz przekazywanie APK opisuje [przewodnik developmentu](docs/DEVELOPMENT.md).
 
-```bash
-./gradlew :app:assembleRelease
-./gradlew :app:testDebugUnitTest :app:lintDebug
-./gradlew :app:connectedDebugAndroidTest
-```
+## Dokumentacja
 
-Wersja MVP `release` jest zoptymalizowana przez R8 i podpisana kluczem testowym `debug` do instalacji lokalnej. To nie jest konfiguracja do publikacji w Google Play; do publikacji należy skonfigurować własny klucz.
-
-Opcjonalny test integracyjny z żywą stroną:
-
-```bash
-CHARLIE_LIVE=1 ./gradlew :app:testDebugUnitTest --tests '*LiveImportTest' --rerun-tasks
-```
-
-Testy deterministyczne korzystają z HTML pobranego 30.10.2026. Raporty testów i lint: `app/build/reports/`. Szczegóły walidacji i ograniczeń: [docs/QA.md](docs/QA.md).
+[Indeks dokumentacji i zasady jej utrzymywania](docs/README.md) prowadzi do [architektury](docs/ARCHITECTURE.md), [systemu designu](DESIGN.md), [produktu](PRODUCT.md), decyzji architektonicznych i raportów QA. Dokumenty aktualizujemy razem ze zmianami kodu. [Raport MVP](docs/QA.md) zachowuje wyniki testów konkretnego APK 0.1.0.
 
 ## Źródła i zależności
 

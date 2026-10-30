@@ -30,11 +30,11 @@ The public cinema website is https://www.charlie.pl/. It publishes per-day HTML 
 - Filmweb link should identify whether it opens search rather than a verified film page.
 - No account, custom backend or payment processing in this app.
 - Unofficial project; do not imply endorsement by the cinema.
-- Android 8+ is the proposed minimum; phone is the primary target, with adaptive tablet navigation.
+- Android 8+ is the implemented minimum; phone is the primary target, with adaptive tablet navigation.
 
 ## Evidence on Hand
 
-Live HTML captured on 2026-10-30 in /tmp/charlie-schedule.html and /tmp/charlie-film.html; implementation fixtures will retain relevant source HTML.
+Public HTML captured on 2026-10-30 is retained in `app/src/test/resources/schedule-2026-10-30.html` and `app/src/test/resources/film-1787938780.html`. Release verification is recorded in `docs/QA.md`; documentation navigation and maintenance are in `docs/README.md`.
 
 ## Product Principles
 

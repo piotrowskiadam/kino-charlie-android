@@ -518,7 +518,7 @@
   ],
   "narrative": {
     "northStar": "Pocket cinema program",
-    "overview": "Charlie uses the approved pocket cinema program: literary headings, warm paper surfaces, restrained burgundy accents and native Android controls. One continuous sheet keeps complete film titles and exact screening times easy to scan. It is a native Kotlin/Jetpack Compose Material 3 implementation; dp and sp in the frontmatter are Android units, not CSS pixels.\n\nThe user selected variant A in `.impeccable/mocks/decision/variants.png`. The shipped interface adapts that board to Android. Actual source images replace illustrative decision-board art; no fabricated film artwork ships.",
+    "overview": "Charlie uses the approved pocket cinema program: literary headings, warm paper surfaces, restrained burgundy accents and native Android controls. One continuous sheet keeps complete film titles and exact screening times easy to scan. It is a native Kotlin/Jetpack Compose Material 3 implementation; dp and sp in the frontmatter are Android units, not CSS pixels.\n\nThe user selected variant A in `docs/design/approved-mvp-variants.png`. The shipped interface adapts that board to Android. Actual source images replace illustrative decision-board art; no fabricated film artwork ships.",
     "keyCharacteristics": [
       "Literata headings paired with native sans controls and numerals.",
       "Continuous program rows, restrained separators and a 2:3 poster silhouette.",

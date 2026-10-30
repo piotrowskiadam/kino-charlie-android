@@ -105,7 +105,7 @@ components:
 
 Charlie uses the approved pocket cinema program: literary headings, warm paper surfaces, restrained burgundy accents and native Android controls. One continuous sheet keeps complete film titles and exact screening times easy to scan. It is a native Kotlin/Jetpack Compose Material 3 implementation; dp and sp in the frontmatter are Android units, not CSS pixels.
 
-The user selected variant A in `.impeccable/mocks/decision/variants.png`. The shipped interface adapts that board to Android. Actual source images replace illustrative decision-board art; no fabricated film artwork ships.
+The user selected variant A in `docs/design/approved-mvp-variants.png`. The shipped interface adapts that board to Android. Actual source images replace illustrative decision-board art; no fabricated film artwork ships.
 
 **Key Characteristics:**
 - Literata headings paired with native sans controls and numerals.
