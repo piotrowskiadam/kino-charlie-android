@@ -6,6 +6,8 @@
 
 Kotlin · Jetpack Compose · Material 3 · Android 8.0+
 
+**Niezależny projekt hobbystyczny, udostępniany bezpłatnie i bez celu zarobkowego.** Autor nie jest powiązany z Kinem Charlie; aplikacja powstała jako alternatywny, wygodny sposób przeglądania publicznego repertuaru. [Charakter projektu i zastrzeżenia](#charakter-projektu-i-zastrzeżenia).
+
 <p align="center">
   <img src="docs/screenshots/0.1.5/repertuar.png" width="260" alt="Dzisiejszy repertuar: logo kina, plakaty i godziny pod nazwami sal">
   <img src="docs/screenshots/0.1.5/szczegoly.png" width="260" alt="Szczegóły filmu z plakatem i opisem">
@@ -88,3 +90,15 @@ UI obserwuje lokalny katalog przez `StateFlow`. Repozytorium zapisuje każdy pop
 HTML kina może się zmieniać. Cache obejmuje faktycznie opublikowane seanse. Obrazy MSI mają ograniczoną rozdzielczość; aplikacja nie powiększa małych miniatur głównej strony i nie wymyśla grafiki. Android decyduje o wykonaniu pracy w tle; wymuszone zatrzymanie aplikacji wstrzymuje ją do kolejnego otwarcia.
 
 Dane: [Kino Charlie](https://www.charlie.pl/) i [system biletowy](https://bilety.charlie.pl/MSI/mvc/pl). Projekt nie jest oficjalną aplikacją kina.
+
+## Charakter projektu i zastrzeżenia
+
+Charlie · repertuar jest niezależnym, niekomercyjnym projektem hobbystycznym. Aplikacja jest udostępniana bezpłatnie, bez reklam i opłat za korzystanie; jej celem jest wyłącznie zapewnienie alternatywnego, wygodnego sposobu przeglądania publicznie dostępnego repertuaru Kina Charlie.
+
+Autor nie jest związany organizacyjnie ani kapitałowo z Kinem-Galerią Charlie, nie reprezentuje kina i nie działa w jego imieniu. Aplikacja nie jest oficjalnym produktem kina. Projekt nie deklaruje autoryzacji, patronatu ani wsparcia ze strony kina. Użycie nazwy oraz logo służy identyfikacji źródła repertuaru i nie oznacza patronatu, partnerstwa ani rekomendacji.
+
+Prawa do nazwy i oficjalnego logo kina, opisów, plakatów oraz pozostałych materiałów źródłowych należą do odpowiednich uprawnionych. Dotyczy to również takich materiałów widocznych na screenshotach. Projekt nie przenosi tych praw ani nie udziela licencji na zasoby podmiotów trzecich. Pochodzenie zasobów i ich odrębne warunki opisano w [NOTICE.md](NOTICE.md). Publiczna dostępność materiałów i niekomercyjny charakter projektu same w sobie nie oznaczają zgody uprawnionych na ich wykorzystanie.
+
+Repertuar jest odczytywany z zewnętrznych stron i przechowywany w cache, dlatego może być niepełny, nieaktualny lub zawierać błędy. Przed zakupem lub wizytą sprawdź godzinę, salę, cenę i dostępność na [oficjalnej stronie kina](https://www.charlie.pl/) albo w jego [systemie sprzedaży](https://bilety.charlie.pl/MSI/mvc/pl). Wybór miejsc, płatności i zawarcie umowy zakupu odbywają się poza aplikacją, w serwisie kina.
+
+Oprogramowanie jest udostępniane w stanie, w jakim się znajduje, bez zapewnienia kompletności, aktualności i nieprzerwanego działania. Wyłączenia gwarancji i odpowiedzialności mogą mieć zastosowanie wyłącznie w zakresie dopuszczalnym przez obowiązujące prawo; niniejszy opis nie wyłącza praw, których nie można wyłączyć ustawowo.

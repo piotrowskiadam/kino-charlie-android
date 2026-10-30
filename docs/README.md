@@ -13,6 +13,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Przyciski odświeżania](specs/refresh-buttons.md) | Widoczny obrys, ikonki i stany akcji w Kino |
 | [Monochromatyczny tekst i OLED](specs/oled.md) | Czysta czerń/biel, neutralne powierzchnie i paski systemowe |
 | [Widoczność sal](specs/rooms.md) | Nazwa sali przy godzinach i jednoznaczne rozróżnianie seansów |
+| [Źródła i prawa do zasobów](../NOTICE.md) | Pochodzenie materiałów i odrębne warunki podmiotów trzecich |
 | [GLOSSARY](../GLOSSARY.md) | Znaczenie pojęć domenowych |
 | [Architektura](ARCHITECTURE.md) | Moduły, przepływ danych, cache, synchronizacja i granice integracji |
 | [Dodatkowe źródło MSI](sources/bilety-charlie.md) | Zgoda użytkownika, sprawdzone dane listy biletowej i warunki przyszłej integracji |
@@ -43,6 +44,7 @@ Dokumentację aktualizujemy w tej samej zmianie co odpowiadający jej kod. Opisu
 | Import HTML, model danych, format cache, synchronizacja, integracje | ARCHITECTURE; ADR przy zmianie istotnego kompromisu |
 | Zmiana znaczenia pojęcia | GLOSSARY; odwołania używające tego pojęcia |
 | Toolchain, zależności wpływające na budowanie, podpisywanie, testy | DEVELOPMENT; odpowiednie pliki konfiguracyjne |
+| Licencja i charakter projektu | LICENSE, README, NOTICE, PRODUCT oraz opis i wykrywana licencja GitHuba |
 | Wydanie lub ponowna weryfikacja APK | Nowy datowany raport QA i jego link w tym indeksie |
 
 Przy istotnej decyzji architektonicznej zachowujemy poprzedni ADR i dodajemy kolejny z kontekstem, wyborem, alternatywami i skutkami. Zmianę zastępującą wcześniejszą decyzję łączymy linkami w obu dokumentach. Drobna zmiana implementacyjna wystarcza w opisie bieżącej architektury.
