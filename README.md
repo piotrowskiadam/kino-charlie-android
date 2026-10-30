@@ -7,15 +7,15 @@
 Kotlin · Jetpack Compose · Material 3 · Android 8.0+
 
 <p align="center">
-  <img src="docs/screenshots/0.1.2/repertuar.png" width="260" alt="Dzisiejszy repertuar: logo kina, plakaty i godziny pod nazwami sal">
+  <img src="docs/screenshots/0.1.3/repertuar.png" width="260" alt="Dzisiejszy repertuar: logo kina, plakaty i godziny pod nazwami sal">
   <img src="docs/screenshots/0.1.2/szczegoly.png" width="260" alt="Szczegóły filmu z plakatem i opisem">
 </p>
 
 ## Wypróbuj aplikację
 
-**[Pobierz APK 0.1.2](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.2/Charlie-MVP-0.1.2.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.2)
+**[Pobierz APK 0.1.3](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.3/Charlie-MVP-0.1.3.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.3)
 
-MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.2.md).
+MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.3.md).
 
 ## Film, godzina i właściwa sala
 
@@ -37,7 +37,7 @@ Później aplikacja pokazuje lokalny cache bez czekania na sieć. Odświeżanie 
 
 <p align="center">
   <img src="docs/screenshots/0.1.2/powitanie.png" width="260" alt="Pierwsze przygotowanie za ekranem powitalnym z logo kina">
-  <img src="docs/screenshots/0.1.2/ciemny-offline.png" width="260" alt="Zapisany repertuar w ciemnym motywie bez internetu">
+  <img src="docs/screenshots/0.1.3/ciemny-offline.png" width="260" alt="Zapisany repertuar w ciemnym motywie bez internetu">
 </p>
 
 Interfejs obsługuje jasny i ciemny motyw, powiększanie czcionki, systemowy przycisk Wstecz i nawigację boczną na szerokich ekranach.
@@ -62,7 +62,7 @@ Bez klucza do bazy filmów i konfiguracji backendu. [Przewodnik developmentu](do
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.2](docs/qa/2026-10-30-0.1.2.md).
+Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.3](docs/qa/2026-10-30-0.1.3.md).
 
 ## Architektura i dalszy rozwój
 

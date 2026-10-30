@@ -524,7 +524,7 @@
       "Continuous program rows, restrained separators and a 2:3 poster silhouette.",
       "Truthful cached status, complete titles and visibly named room groups with directly actionable screening times.",
       "System dark theme, font scaling, Android Back and adaptive navigation.",
-      "Official cinema logo, a bowler-hat/moustache launcher icon and a brief cache-aware first-run welcome."
+      "Positive black cinema logo on a white bordered plaque in dark mode, a black bowler-hat launcher icon with a narrow toothbrush moustache, and a brief cache-aware first-run welcome."
     ],
     "rules": [
       {
@@ -551,6 +551,11 @@
         "name": "The First Run Rule",
         "body": "Read cache before deciding on welcome. Prepare only until today is durable, without an artificial delay; continue future days in the background. Use the official mark, honest indeterminate progress and actionable first-use failure.",
         "section": "layout"
+      },
+      {
+        "name": "The Positive Logo Rule",
+        "body": "Keep the cinema mark black in every theme. On dark surfaces use a white plaque with 6dp corners, 1dp outline-variant border and 4dp padding; preserve the face polarity and artwork aspect ratio.",
+        "section": "colors"
       }
     ],
     "dos": [

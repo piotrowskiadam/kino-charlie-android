@@ -20,6 +20,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Raport MVP](QA.md) | Historyczne wyniki weryfikacji APK 0.1.0 z 30.10.2026 |
 | [Raport 0.1.1 — sale](qa/2026-10-30-0.1.1-rooms.md) | Nazwy sal, regresje wyboru seansu i dowody wizualne |
 | [Raport 0.1.2](qa/2026-10-30-0.1.2.md) | Powitanie, plakaty, branding i publikacja GitHub |
+| [Raport 0.1.3](qa/2026-10-30-0.1.3.md) | Czarna ikona z węższym wąsikiem i poprawne logo na białym tle w ciemnym motywie |
 | [Śledzenie prac](agents/issue-tracker.md) | Miejsce zapisu zakresu zmian i ograniczeń |
 | [Instrukcje dla agentów](../AGENTS.md) | Warunki sięgania do dokumentów i ich aktualizowania |
 
