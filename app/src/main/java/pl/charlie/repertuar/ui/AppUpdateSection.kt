@@ -25,7 +25,7 @@ data class AppUpdateUi(
 internal fun AppUpdateSection(updates: AppUpdateUi, online: Boolean, openUrl: (String) -> Unit) {
     val state = updates.state
     val transfer = updates.transfer
-    val release = transfer.release?.takeIf { transfer.busy } ?: state.available ?: transfer.release
+    val release = transfer.release?.takeIf { transfer.busy || transfer.phase == DownloadPhase.Ready } ?: state.available ?: transfer.release
     val active = transfer.takeIf { it.release?.version == release?.version } ?: ApkDownloadState()
     Column(Modifier.fillMaxWidth()) {
         Text("Aktualizacje aplikacji", style = MaterialTheme.typography.titleLarge)
@@ -53,6 +53,11 @@ internal fun AppUpdateSection(updates: AppUpdateUi, online: Boolean, openUrl: (S
                     }
                     Text("Plik jest gotowy. Możesz zainstalować go także offline. Android poprosi o potwierdzenie instalacji.",
                         style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 8.dp))
+                    state.available?.takeIf { it.version > release.version }?.let { newer ->
+                        ProgramTextButton(onClick = { updates.download(newer) }, enabled = online && !state.checking) {
+                            Text("Pobierz nowszą wersję ${newer.version}")
+                        }
+                    }
                 }
                 else -> {
                     ProgramButton(onClick = { updates.download(release) }, enabled = online && !state.checking,

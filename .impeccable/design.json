@@ -909,7 +909,7 @@
       },
       {
         "name": "The Quiet Update Rule",
-        "body": "Keep update checks separate from the schedule. In Kino show native byte-based download progress, cancel and retry. A verified ready APK has an offline-capable install button; Android owns source permission and installation confirmation. No browser download or forced modal.",
+        "body": "Keep update checks separate from the schedule. In Kino show native byte-based download progress, cancel and retry. A verified ready APK keeps its offline-capable install button when latest advances, with a separate newer-download action; Android owns source permission and installation confirmation. No browser download or forced modal.",
         "section": "layout"
       },
       {

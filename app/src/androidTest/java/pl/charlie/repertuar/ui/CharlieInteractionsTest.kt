@@ -17,6 +17,21 @@ class CharlieInteractionsTest {
     private val film = Film("one", "Lalka", "https://www.charlie.pl/", genre = "dramat", durationMinutes = 162)
     private val second = Film("two", "Pieśni lasu", "https://www.charlie.pl/", genre = "dokumentalny")
 
+    @Test fun readyApkRemainsInstallableOfflineWhenLatestVersionAdvances() {
+        val ready = AppRelease(AppVersion.parse("0.1.8"), 300L, "a".repeat(64))
+        val newer = AppRelease(AppVersion.parse("0.1.9"), 400L, "b".repeat(64))
+        var installed = false
+        compose.setContent { CharlieTheme {
+            CharlieApp(Library(), false, null, false, {}, {}, {}, {}, today,
+                updates = AppUpdateUi(UpdateState(newer),
+                    transfer = ApkDownloadState(ready, DownloadPhase.Ready, 300L), install = { installed = true }))
+        } }
+        compose.onNodeWithTag("tab-cinema").performClick()
+        compose.onNodeWithText("Zainstaluj aktualizację").performScrollTo().assertIsEnabled().performClick()
+        compose.runOnIdle { assertTrue(installed) }
+        compose.onNodeWithText("Pobierz nowszą wersję 0.1.9").performScrollTo().assertIsNotEnabled()
+    }
+
     @Test fun cancelledNativeDownloadCanBeRetriedInsideCinemaTab() {
         val release = AppRelease(AppVersion.parse("0.1.9"), 300L, "a".repeat(64))
         val transfer = mutableStateOf(ApkDownloadState(release, DownloadPhase.Downloading, 75L))
