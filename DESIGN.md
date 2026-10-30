@@ -150,7 +150,7 @@ Literata supplies the literary program voice. Native sans keeps metadata, contro
 - **Headline small:** film detail and screening sheet title; other properties inherit Material headlineSmall.
 - **Title large:** section and empty-state headings and the selected room in the screening sheet; explicit semibold. Date numerals locally use this role with native sans.
 - **Title medium:** film titles, date heading, detail toolbar and room names in detail screening rows; explicit semibold.
-- **Body and labels:** Material bodyLarge/bodyMedium/bodySmall and labelLarge/labelMedium, inherited without local scale changes. Screening times locally use semibold labelLarge.
+- **Body and labels:** Material bodyLarge/bodyMedium/bodySmall and labelLarge/labelMedium, inherited without local scale changes. Screening times and room group labels locally use semibold labelLarge.
 
 **The Complete Title Rule.** Critical film names wrap; the implementation sets no title truncation or maximum line count.
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-30T00:09:26.795790+00:00",
+  "generatedAt": "2026-10-30T00:33:37.734245+00:00",
   "title": "Design System: Charlie — repertuar",
   "extensions": {
     "colorMeta": {
@@ -450,11 +450,11 @@
       },
       "title-large": {
         "displayName": "Title Large",
-        "purpose": "Section and empty-state headings; date numerals switch to native sans."
+        "purpose": "Section and empty-state headings and the selected room in the screening sheet; date numerals switch to native sans."
       },
       "title-medium": {
         "displayName": "Title Medium",
-        "purpose": "Film titles, selected date and toolbar."
+        "purpose": "Film titles, selected date, toolbar and room names in detail screening rows."
       }
     },
     "shadows": [],

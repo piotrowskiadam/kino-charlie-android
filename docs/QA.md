@@ -36,6 +36,8 @@ Independent review reported one requirement mismatch: stale-cache checking only 
 
 ## Visual review
 
+Zachowany w Git [podgląd repertuaru wersji 0.1.0](qa/assets/0.1.0/repertuar.png) pochodzi z oryginalnej weryfikacji tego APK. Lokalne robocze zrzuty w `.impeccable/review/` są ponownie używane przy kolejnych wydaniach; nie stanowią trwałego archiwum wersji 0.1.0.
+
 Approved direction A: pocket cinema program. Emulator evidence in `.impeccable/review/`: phone-light, phone-dark, phone-large-font, tablet, phone-detail, phone-saved, phone-offline and phone-checkout-offline PNGs. Initial captures with incomplete configuration redraws were rejected and recaptured after restart/UI idle. The review accepted type, warm ground, content topology and native adaptation, and requested 8 dp vertical separation between wrapped screening buttons. That correction was recaptured on phone, saved and large-font views. The reviewer scored both original fixes resolved and returned `ship` at the scope of those fixes; no claim of an automated pixel gate is made. No HTML detector or automated pixel-diff gate ran for this native adaptation of the comparison board.
 
 ## Practical limits

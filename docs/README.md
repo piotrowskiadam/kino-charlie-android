@@ -16,6 +16,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Development](DEVELOPMENT.md) | Środowisko, budowanie, testowanie i przygotowanie APK |
 | [Decyzje architektoniczne](adr/001-offline-schedule.md) | Uzasadnienie przyjętych kompromisów; kolejne decyzje w tym samym katalogu |
 | [Raport MVP](QA.md) | Historyczne wyniki weryfikacji APK 0.1.0 z 30.10.2026 |
+| [Raport 0.1.1 — sale](qa/2026-10-30-0.1.1-rooms.md) | Nazwy sal, regresje wyboru seansu i dowody wizualne |
 | [Śledzenie prac](agents/issue-tracker.md) | Miejsce zapisu zakresu zmian i ograniczeń |
 | [Instrukcje dla agentów](../AGENTS.md) | Warunki sięgania do dokumentów i ich aktualizowania |
 

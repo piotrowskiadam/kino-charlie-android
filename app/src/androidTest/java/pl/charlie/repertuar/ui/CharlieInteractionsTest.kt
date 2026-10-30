@@ -94,16 +94,16 @@ class CharlieInteractionsTest {
 
     @Test fun roomNamesAreVisibleBeforeSelectingTimeOnScheduleAndSavedFilms() {
         launch(multipleRooms = true)
-        compose.onNodeWithTag("room-one-Studyjna").performScrollTo().assertTextEquals("Sala Studyjna")
-        compose.onNodeWithTag("room-one-Kameralna").performScrollTo().assertTextEquals("Sala Kameralna")
-        compose.onNodeWithText("Lalka").performScrollTo().performClick()
+        compose.onNodeWithTag("room-one-Studyjna", useUnmergedTree = true).performScrollTo().assertTextEquals("Sala Studyjna")
+        compose.onNodeWithTag("room-one-Kameralna", useUnmergedTree = true).performScrollTo().assertTextEquals("Sala Kameralna")
+        compose.onNodeWithText("Lalka", useUnmergedTree = true).performScrollTo().performClick()
         compose.onNodeWithTag("film-details").performScrollToNode(hasText("Sala Kameralna"))
         compose.onNodeWithText("Sala Kameralna").assertIsDisplayed()
         compose.onNodeWithContentDescription("Zapisz film").performClick()
         compose.onNodeWithContentDescription("Wróć do repertuaru").performClick()
         compose.onNodeWithTag("tab-saved").performClick()
-        compose.onNodeWithTag("room-one-Studyjna").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithTag("room-one-Kameralna").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("room-one-Studyjna", useUnmergedTree = true).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("room-one-Kameralna", useUnmergedTree = true).performScrollTo().assertIsDisplayed()
     }
 
     @Test fun identicalTimesInDifferentRoomsKeepTheSelectedRoomAndCheckoutUrl() {
