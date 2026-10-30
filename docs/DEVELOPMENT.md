@@ -58,3 +58,9 @@ Kopie plików do przekazania można trzymać w ignorowanym `output/`. Zapisz naz
 ## Domknięcie zmiany
 
 Sprawdź tabelę utrzymania dokumentów w [indeksie](README.md). Zapisz kod, odpowiednie dokumenty i wynik weryfikacji razem. W raporcie odróżnij test wykonany od planowanego; gdy zmiana nie wpływa na dany obszar dokumentacji, zachowaj istniejący opis zamiast dopisywać pozorne aktualizacje.
+
+## Kanał aktualizacji
+
+Stały identyfikator publicznego repozytorium jest w `updates/AppRelease.kt`. Fork musi ustawić własny kanał, jeśli ma proponować własne APK. Do wykrywania służą zwykłe opublikowane wydania oznaczone jako Latest; prerelease i draft nie są proponowane. Wersja ma format X.Y.Z, tag vX.Y.Z i plik Charlie-MVP-X.Y.Z.apk. Opublikuj kompletny APK przed oznaczeniem wydania jako Latest. Podnieś versionCode i zachowaj ten sam klucz podpisu przy każdym kolejnym APK. Zmiana klucza uniemożliwi zwykłą aktualizację już zainstalowanej aplikacji.
+
+Sprawdzenie odbywa się najwyżej raz na dobę, gdy aplikacja jest używana; przycisk w Kino pozwala sprawdzić ręcznie. UI i cache nie zależą od dostępności GitHuba. Zwykłe pobieranie przekazano przeglądarce, a instalację Androidowi. Nie opisuj tego jako instalacji automatycznej ani bez potwierdzenia.

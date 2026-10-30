@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 class CharlieViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as CharlieApplication
     val library = app.repository.library
+    val updates = app.updates.state
     private val mutableToday = MutableStateFlow(cinemaToday())
     val today = mutableToday.asStateFlow()
     private val mutableStartup = MutableStateFlow(StartupPhase.CheckingCache)
@@ -48,11 +49,16 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             online.collect { available ->
                 if (available && mutableStartup.value == StartupPhase.Failed) refresh()
+                if (available) app.updates.check()
             }
         }
     }
 
     fun onResume() {
+        viewModelScope.launch {
+            app.updates.load()
+            if (connected()) app.updates.check()
+        }
         viewModelScope.launch {
             app.repository.load()
             val currentDate = cinemaToday()
@@ -65,6 +71,8 @@ class CharlieViewModel(application: Application) : AndroidViewModel(application)
             else if (!hasRequestedAssets && library.value.days.values.any(library.value::needsPosters)) requestAssets()
         }
     }
+
+    fun checkUpdates() { if (connected()) viewModelScope.launch { app.updates.check(force = true) } }
 
     fun refresh() {
         if (mutableRefreshing.value) return

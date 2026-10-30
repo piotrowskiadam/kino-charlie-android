@@ -556,6 +556,11 @@
         "name": "The Positive Logo Rule",
         "body": "Keep the cinema mark black in every theme. On dark surfaces use a white plaque with 6dp corners, 1dp outline-variant border and 4dp padding; preserve the face polarity and artwork aspect ratio.",
         "section": "colors"
+      },
+      {
+        "name": "The Quiet Update Rule",
+        "body": "Keep release checks independent from the program. Show a primary badge on Kino for a newer release and a flat accessible update section; explain browser download and Android confirmation, preserve known information offline, and never block browsing.",
+        "section": "layout"
       }
     ],
     "dos": [

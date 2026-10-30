@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.Assert.assertEquals
 import pl.charlie.repertuar.StartupPhase
 import pl.charlie.repertuar.data.*
+import pl.charlie.repertuar.updates.*
 import java.time.LocalDate
 
 class CharlieInteractionsTest {
@@ -15,6 +16,55 @@ class CharlieInteractionsTest {
     private val today = LocalDate.parse("2026-10-30")
     private val film = Film("one", "Lalka", "https://www.charlie.pl/", genre = "dramat", durationMinutes = 162)
     private val second = Film("two", "Pieśni lasu", "https://www.charlie.pl/", genre = "dokumentalny")
+
+    @Test fun cinemaTabOffersTheNewVersionAndDownloadKeepsScheduleAvailable() {
+        var downloaded: AppRelease? = null
+        val library = Library(films = mapOf("one" to film), days = mapOf(today to ScheduleDay(
+            today, listOf(film), listOf(Screening("one", today, "13:45", "Studyjna")), 1_000L)))
+        compose.setContent { CharlieTheme {
+            CharlieApp(library, false, null, true, {}, {}, {}, {}, today,
+                updates = AppUpdateUi(UpdateState(AppRelease(AppVersion.parse("0.1.5")), 1_000L),
+                    download = { downloaded = it }))
+        } }
+        compose.onNodeWithTag("tab-cinema").performClick()
+        compose.onNodeWithText("Dostępna wersja 0.1.5").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Pobierz aktualizację").performScrollTo().performClick()
+        compose.runOnIdle {
+            assertEquals("https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.5/Charlie-MVP-0.1.5.apk",
+                downloaded?.downloadUrl)
+        }
+        compose.onNodeWithTag("tab-schedule").performClick()
+        compose.onNodeWithTag("film-one").assertExists()
+    }
+
+    @Test fun knownUpdateRemainsVisibleOfflineWithoutAllowingDownloadOrChecking() {
+        compose.setContent { CharlieTheme {
+            CharlieApp(Library(), false, null, false, {}, {}, {}, {}, today,
+                updates = AppUpdateUi(UpdateState(AppRelease(AppVersion.parse("0.1.5")), 1_000L)))
+        } }
+        compose.onNodeWithContentDescription("Dostępna aktualizacja aplikacji", useUnmergedTree = true).assertExists()
+        compose.onNodeWithTag("tab-cinema").performClick()
+        compose.onNodeWithText("Dostępna wersja 0.1.5").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Pobierz aktualizację").performScrollTo().assertIsNotEnabled()
+        compose.onNodeWithText("Sprawdź aktualizacje").performScrollTo().assertIsNotEnabled()
+        compose.onNodeWithText("Połącz się z internetem, aby sprawdzić lub pobrać aktualizację.")
+            .performScrollTo().assertIsDisplayed()
+    }
+
+    @Test fun manualUpdateCheckShowsProgressThenReportsNoNewerVersion() {
+        val state = mutableStateOf(UpdateState(error = "Nie udało się sprawdzić aktualizacji."))
+        compose.setContent { CharlieTheme {
+            CharlieApp(Library(), false, null, true, {}, {}, {}, {}, today,
+                updates = AppUpdateUi(state.value, check = { state.value = UpdateState(checking = true) }))
+        } }
+        compose.onNodeWithTag("tab-cinema").performClick()
+        compose.onNodeWithText("Sprawdź aktualizacje").performScrollTo().performClick()
+        compose.onNodeWithText("Sprawdzamy aktualizacje…").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Sprawdź aktualizacje").assertIsNotEnabled()
+        compose.runOnIdle { state.value = UpdateState(checkedAt = 1_000L) }
+        compose.onNodeWithText("Masz aktualną wersję aplikacji.").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Pobierz aktualizację").assertDoesNotExist()
+    }
 
     @Test fun firstLaunchReleasesTodayWhileFutureDaysAreStillPreparing() {
         val library = mutableStateOf(Library())

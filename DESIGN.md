@@ -206,6 +206,10 @@ Read local cache before choosing a first-run surface; returning cached users see
 
 The main header uses a 56dp-high official logo in its original black positive, with an accessible cinema name. On dark surfaces it rests on a white plaque with 6dp corners, a 1dp outline-variant border and 4dp padding inside the unchanged outer height; the artwork preserves its aspect ratio. Do not reverse its black and white regions. `CinemaLogo.kt` displays the mark region from the original bundled source JPEG, excluding the surrounding website captions at draw time. It samples the bitmap to avoid decoding the full original on each composition. Provenance: [asset notice](NOTICE.md). The adaptive launcher icon is a separate crisp black vector bowler-hat motif with a narrow 8/108-wide toothbrush moustache on paper, with a monochrome variant on Android 13+. It is an app icon, not a replacement cinema logo.
 
+### App updates
+
+The Kino destination contains a flat “Aktualizacje aplikacji” section separated by the existing 24dp divider rhythm. Title uses titleLarge; installed version, progress, recovery and browser handoff use native body text. A newer release has primary titleMedium emphasis, a full-width 52dp-minimum download button, release-notes link and manual check. Offline keeps known release information but disables network actions and explains recovery. A small primary badge on Kino has an accessible “Dostępna aktualizacja aplikacji” description on both bottom bar and rail. No modal prompt, forced update or schedule-blocking overlay.
+
 ## Do's and Don'ts
 
 ### Do:

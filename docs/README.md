@@ -8,6 +8,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [PRODUCT](../PRODUCT.md) | Cel, użytkownicy, ustalone możliwości i ograniczenia |
 | [Specyfikacja MVP](specs/mvp.md) | Zakres i kryteria akceptacji pierwszej wersji |
 | [Powitanie, plakaty i branding](specs/first-run-and-branding.md) | Pierwsze przygotowanie, poprawa obrazów i identyfikacja kina |
+| [Aktualizacje aplikacji](specs/updates.md) | Sprawdzanie wydań, cache informacji i pobieranie APK |
 | [Widoczność sal](specs/rooms.md) | Nazwa sali przy godzinach i jednoznaczne rozróżnianie seansów |
 | [GLOSSARY](../GLOSSARY.md) | Znaczenie pojęć domenowych |
 | [Architektura](ARCHITECTURE.md) | Moduły, przepływ danych, cache, synchronizacja i granice integracji |
@@ -21,6 +22,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [Raport 0.1.1 — sale](qa/2026-10-30-0.1.1-rooms.md) | Nazwy sal, regresje wyboru seansu i dowody wizualne |
 | [Raport 0.1.2](qa/2026-10-30-0.1.2.md) | Powitanie, plakaty, branding i publikacja GitHub |
 | [Raport 0.1.3](qa/2026-10-30-0.1.3.md) | Czarna ikona z węższym wąsikiem i poprawne logo na białym tle w ciemnym motywie |
+| [Raport 0.1.4](qa/2026-10-30-0.1.4.md) | Sprawdzanie wydań, limit dobowy, cache offline i przycisk pobrania APK |
 | [Śledzenie prac](agents/issue-tracker.md) | Miejsce zapisu zakresu zmian i ograniczeń |
 | [Instrukcje dla agentów](../AGENTS.md) | Warunki sięgania do dokumentów i ich aktualizowania |
 

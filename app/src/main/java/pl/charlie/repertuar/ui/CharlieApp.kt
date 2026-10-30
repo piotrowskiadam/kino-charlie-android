@@ -46,7 +46,8 @@ private fun String.searchKey() = Normalizer.normalize(lowercase(Polish).replace(
 @Composable
 fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Boolean,
     onRefresh: () -> Unit, onSave: (String) -> Unit, onBook: (Screening) -> Unit,
-    onOpenUrl: (String) -> Unit, today: LocalDate, startupPhase: StartupPhase = StartupPhase.Ready) {
+    onOpenUrl: (String) -> Unit, today: LocalDate, startupPhase: StartupPhase = StartupPhase.Ready,
+    updates: AppUpdateUi = AppUpdateUi()) {
     if (startupPhase == StartupPhase.CheckingCache) {
         Surface(Modifier.fillMaxSize().testTag("startup-cache")) {
             Box(Modifier.safeDrawingPadding(), contentAlignment = Alignment.Center) { CinemaLogo() }
@@ -94,7 +95,7 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                 if (!wide && detail == null) NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLow, tonalElevation = 0.dp) {
                     destinations.forEachIndexed { index, destination ->
                         NavigationBarItem(selected = tab == index, onClick = { tab = index },
-                            icon = { Icon(destination.icon, null) }, label = { Text(destination.label) },
+                            icon = { DestinationIcon(destination, updates.state.available != null) }, label = { Text(destination.label) },
                             colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary,
                                 selectedTextColor = MaterialTheme.colorScheme.primary, indicatorColor = MaterialTheme.colorScheme.primaryContainer),
                             modifier = Modifier.testTag(destination.tag))
@@ -106,13 +107,13 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                 if (wide && detail == null) NavigationRail(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
                     Spacer(Modifier.height(16.dp))
                     destinations.forEachIndexed { index, destination -> NavigationRailItem(
-                        selected = tab == index, onClick = { tab = index }, icon = { Icon(destination.icon, null) },
+                        selected = tab == index, onClick = { tab = index }, icon = { DestinationIcon(destination, updates.state.available != null) },
                         label = { Text(destination.label) }, modifier = Modifier.testTag(destination.tag)) }
                 }
                 if (detail != null) {
                     FilmDetails(detail, library, today, onOpenUrl, { booking = it }, onRefresh)
                 } else if (tab == 2) {
-                    CinemaInfo(library, online, refreshing, onRefresh, onOpenUrl)
+                    CinemaInfo(library, online, refreshing, onRefresh, onOpenUrl, updates)
                 } else {
                     val screenings = library.days[date]?.screenings.orEmpty()
                     val films = if (tab == 1) library.savedIds.mapNotNull { library.films[it] }.sortedBy { it.title }
@@ -228,6 +229,14 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
 }
 
 private data class Destination(val label: String, val icon: ImageVector, val tag: String)
+
+@Composable
+private fun DestinationIcon(destination: Destination, updateAvailable: Boolean) {
+    BadgedBox(badge = {
+        if (updateAvailable && destination.tag == "tab-cinema") Badge(containerColor = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.semantics { contentDescription = "Dostępna aktualizacja aplikacji" })
+    }) { Icon(destination.icon, null) }
+}
 private val destinations = listOf(Destination("Repertuar", Icons.Outlined.CalendarMonth, "tab-schedule"),
     Destination("Zapisane", Icons.Outlined.BookmarkBorder, "tab-saved"), Destination("Kino", Icons.Outlined.Info, "tab-cinema"))
 
@@ -355,7 +364,8 @@ private fun FilmDetails(film: Film, library: Library, today: LocalDate, openUrl:
 }
 
 @Composable
-private fun CinemaInfo(library: Library, online: Boolean, refreshing: Boolean, refresh: () -> Unit, openUrl: (String) -> Unit) {
+private fun CinemaInfo(library: Library, online: Boolean, refreshing: Boolean, refresh: () -> Unit,
+    openUrl: (String) -> Unit, updates: AppUpdateUi) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp)) {
         Text("Do zobaczenia w kinie.", style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
         Text("Kino-Galeria Charlie", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 32.dp))
@@ -373,6 +383,8 @@ private fun CinemaInfo(library: Library, online: Boolean, refreshing: Boolean, r
         TextButton(onClick = refresh, enabled = !refreshing) { Text("Odśwież teraz") }
         Text("Kupno biletu wymaga internetu. Ceny, miejsca i płatność obsługuje strona Kina Charlie.", style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 12.dp))
+        HorizontalDivider(Modifier.padding(vertical = 24.dp))
+        AppUpdateSection(updates, online, openUrl)
         HorizontalDivider(Modifier.padding(vertical = 24.dp))
         Text("Nieoficjalna aplikacja · MVP ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.labelLarge)
         Text("Repertuar, opisy i plakaty pochodzą z charlie.pl. Aplikacja nie jest powiązana z kinem. Bez konta i reklam.",

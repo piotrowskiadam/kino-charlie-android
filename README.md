@@ -13,9 +13,9 @@ Kotlin · Jetpack Compose · Material 3 · Android 8.0+
 
 ## Wypróbuj aplikację
 
-**[Pobierz APK 0.1.3](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.3/Charlie-MVP-0.1.3.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.3)
+**[Pobierz APK 0.1.4](https://github.com/piotrowskiadam/kino-charlie-android/releases/download/v0.1.4/Charlie-MVP-0.1.4.apk)** · [Wydanie](https://github.com/piotrowskiadam/kino-charlie-android/releases/tag/v0.1.4)
 
-MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.3.md).
+MVP do testowania na Androidzie 8 lub nowszym. Pobierz APK na telefon i zezwól wybranej przeglądarce lub menedżerowi plików na instalację tej aplikacji. Pierwsze przygotowanie wymaga internetu; następne uruchomienia korzystają z danych na urządzeniu. APK używa podpisu testowego. Sumę SHA-256 i wyniki kontroli zawiera [raport wydania](docs/qa/2026-10-30-0.1.4.md).
 
 ## Film, godzina i właściwa sala
 
@@ -42,6 +42,14 @@ Później aplikacja pokazuje lokalny cache bez czekania na sieć. Odświeżanie 
 
 Interfejs obsługuje jasny i ciemny motyw, powiększanie czcionki, systemowy przycisk Wstecz i nawigację boczną na szerokich ekranach.
 
+## Aktualizacje aplikacji
+
+W zakładce **Kino → Aktualizacje aplikacji** sprawdzisz zainstalowaną wersję i dostępne wydanie. Aplikacja sprawdza GitHuba w tle najwyżej raz na dobę podczas używania; możesz też wybrać **Sprawdź aktualizacje**. Nowa wersja dodaje dyskretną kropkę na zakładce Kino.
+
+**Pobierz aktualizację** otwiera dokładny APK z tego repozytorium w przeglądarce. Otwórz pobrany plik i potwierdź instalację w Androidzie. Repertuar działa niezależnie od aktualizacji; brak sieci zachowuje poprzednią informację. Wykrywane są zwykłe wydania z właściwym APK, z pominięciem draft i prerelease.
+
+<p align="center"><img src="docs/screenshots/0.1.4/aktualizacje.png" width="260" alt="Sekcja aktualizacji aplikacji w zakładce Kino"></p>
+
 ## Uruchomienie projektu
 
 Potrzebujesz **pełnego JDK 21**, Android SDK i platformy wymaganej przez `compileSdk` w [app/build.gradle.kts](app/build.gradle.kts). Otwórz projekt w Android Studio lub ustaw `JAVA_HOME` i lokalizację SDK przez `ANDROID_HOME` albo nieśledzony `local.properties`.
@@ -62,7 +70,7 @@ Bez klucza do bazy filmów i konfiguracji backendu. [Przewodnik developmentu](do
 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.3](docs/qa/2026-10-30-0.1.3.md).
+Testy obejmują import prawdziwych fixture HTML, zgodność sal i biletów, dopasowanie plakatów, cache po restarcie oraz interakcje Compose. Opcjonalny test żywej strony jest oddzielony od testów deterministycznych. Rzeczywisty zakres kontroli i screenshotów opisuje [raport 0.1.4](docs/qa/2026-10-30-0.1.4.md).
 
 ## Architektura i dalszy rozwój
 

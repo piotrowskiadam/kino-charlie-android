@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.Path.Companion.toOkioPath
 import pl.charlie.repertuar.data.*
+import pl.charlie.repertuar.updates.*
 import java.io.File
 import java.time.LocalDate
 import java.time.ZoneId
@@ -22,6 +23,7 @@ fun cinemaToday(): LocalDate = LocalDate.now(ZoneId.of("Europe/Warsaw"))
 
 class CharlieApplication : Application(), SingletonImageLoader.Factory {
     val repository by lazy { ScheduleRepository(File(filesDir, "schedule"), CharlieSource()) }
+    val updates by lazy { UpdateRepository(File(filesDir, "updates"), GitHubReleaseSource(), AppVersion.parse(BuildConfig.VERSION_NAME)) }
     override fun onCreate() {
         super.onCreate()
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
