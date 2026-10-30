@@ -15,12 +15,17 @@ class CharlieInteractionsTest {
     private val film = Film("one", "Lalka", "https://www.charlie.pl/", genre = "dramat", durationMinutes = 162)
     private val second = Film("two", "Pieśni lasu", "https://www.charlie.pl/", genre = "dokumentalny")
 
-    private fun launch(online: Boolean = false, onBook: (Screening) -> Unit = {}, todayState: State<LocalDate>? = null) {
+    private fun launch(online: Boolean = false, onBook: (Screening) -> Unit = {}, todayState: State<LocalDate>? = null,
+        multipleRooms: Boolean = false) {
         compose.setContent {
             var library by remember { mutableStateOf(Library(
                 days = mapOf(today to ScheduleDay(today, listOf(film, second), listOf(
                     Screening("one", today, "13:45", "Studyjna", "https://bilety.charlie.pl/MSI/?event_id=1"),
-                    Screening("two", today, "16:20", "Kameralna")), 1_000L),
+                    Screening("two", today, "16:20", "Kameralna")) + if (multipleRooms) listOf(
+                    Screening("one", today, "14:45", "Studyjna"),
+                    Screening("one", today, "15:45", "Studyjna"),
+                    Screening("one", today, "16:45", "Studyjna"),
+                    Screening("one", today, "13:45", "Kameralna", "https://bilety.charlie.pl/MSI/?event_id=3")) else emptyList(), 1_000L),
                     today.plusDays(1) to ScheduleDay(today.plusDays(1), listOf(second), listOf(
                         Screening("two", today.plusDays(1), "17:00", "Kameralna")), 1_000L)),
                 films = mapOf("one" to film, "two" to second))) }
@@ -57,7 +62,7 @@ class CharlieInteractionsTest {
     @Test fun screeningSelectionShowsExactRoomAndExplainsOnlineCheckout() {
         launch()
         compose.onNodeWithTag("screening-${today}|13:45|one|Studyjna").performClick()
-        compose.onNodeWithText("Sala Studyjna").assertIsDisplayed()
+        compose.onNodeWithTag("selected-room").assertTextEquals("Sala Studyjna").assertIsDisplayed()
         compose.onNodeWithText("Do zakupu biletu potrzebujesz internetu.").assertIsDisplayed()
         compose.onNodeWithText("Przejdź do kasy kina").assertIsNotEnabled()
     }
@@ -85,5 +90,31 @@ class CharlieInteractionsTest {
         compose.onNodeWithTag("date-${today.plusDays(2)}").performClick()
         compose.onAllNodesWithText("Ten dzień czeka na pobranie").onFirst().assertIsDisplayed()
         compose.onNodeWithText("Zapisano", substring = true).assertDoesNotExist()
+    }
+
+    @Test fun roomNamesAreVisibleBeforeSelectingTimeOnScheduleAndSavedFilms() {
+        launch(multipleRooms = true)
+        compose.onNodeWithTag("room-one-Studyjna").performScrollTo().assertTextEquals("Sala Studyjna")
+        compose.onNodeWithTag("room-one-Kameralna").performScrollTo().assertTextEquals("Sala Kameralna")
+        compose.onNodeWithText("Lalka").performScrollTo().performClick()
+        compose.onNodeWithTag("film-details").performScrollToNode(hasText("Sala Kameralna"))
+        compose.onNodeWithText("Sala Kameralna").assertIsDisplayed()
+        compose.onNodeWithContentDescription("Zapisz film").performClick()
+        compose.onNodeWithContentDescription("Wróć do repertuaru").performClick()
+        compose.onNodeWithTag("tab-saved").performClick()
+        compose.onNodeWithTag("room-one-Studyjna").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("room-one-Kameralna").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test fun identicalTimesInDifferentRoomsKeepTheSelectedRoomAndCheckoutUrl() {
+        var selected: Screening? = null
+        launch(online = true, onBook = { selected = it }, multipleRooms = true)
+        compose.onNodeWithTag("screening-${today}|13:45|one|Kameralna").performScrollTo().performClick()
+        compose.onNodeWithTag("selected-room").assertTextEquals("Sala Kameralna").assertIsDisplayed()
+        compose.onNodeWithText("Przejdź do kasy kina").performClick()
+        compose.runOnIdle {
+            assertEquals("Kameralna", selected?.room)
+            assertEquals("https://bilety.charlie.pl/MSI/?event_id=3", selected?.bookingUrl)
+        }
     }
 }

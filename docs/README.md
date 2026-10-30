@@ -7,6 +7,7 @@ Punkt wejścia dla kolejnych zmian w aplikacji. Opis aktualnej implementacji jes
 | [README](../README.md) | Szybki opis aplikacji i uruchomienia projektu |
 | [PRODUCT](../PRODUCT.md) | Cel, użytkownicy, ustalone możliwości i ograniczenia |
 | [Specyfikacja MVP](specs/mvp.md) | Zakres i kryteria akceptacji pierwszej wersji |
+| [Widoczność sal](specs/rooms.md) | Nazwa sali przy godzinach i jednoznaczne rozróżnianie seansów |
 | [GLOSSARY](../GLOSSARY.md) | Znaczenie pojęć domenowych |
 | [Architektura](ARCHITECTURE.md) | Moduły, przepływ danych, cache, synchronizacja i granice integracji |
 | [DESIGN](../DESIGN.md) | Zatwierdzony kierunek UI, tokeny, komponenty i stany |

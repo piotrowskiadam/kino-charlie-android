@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import pl.charlie.repertuar.BuildConfig
 import pl.charlie.repertuar.data.*
 import java.time.LocalDate
 import java.time.Instant
@@ -108,7 +109,8 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                     else screenings.map { it.filmId }.distinct().mapNotNull { library.films[it] }
                         .filter { it.title.searchKey().contains(query.searchKey()) }
                     val timesByFilm = if (tab == 1) films.associate { film -> film.id to
-                        library.screenings(film.id).filter { !it.date.isBefore(today) }.take(3)
+                        library.screenings(film.id).filter { !it.date.isBefore(today) }
+                            .groupBy { it.room }.values.flatMap { it.take(3) }
                     } else screenings.groupBy { it.filmId }
                     LazyColumn(state = if (tab == 1) savedState else listState,
                         modifier = Modifier.weight(1f).testTag("film-list"),
@@ -197,7 +199,9 @@ fun CharlieApp(library: Library, refreshing: Boolean, error: String?, online: Bo
                 Text(film?.title.orEmpty(), style = MaterialTheme.typography.headlineSmall)
                 Text("${screening.date.format(DateLabel).sentenceCase()} · ${screening.time}",
                     style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 12.dp))
-                Text("Sala ${screening.room}", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 4.dp))
+                Text("Sala ${screening.room}", style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 8.dp).testTag("selected-room"))
                 if (screening.version.isNotBlank()) Text(screening.version, style = MaterialTheme.typography.bodyMedium)
                 Text(if (online) "Wybór miejsc i płatność odbędą się na stronie Kina Charlie. Ceny i dostępność sprawdzisz w kasie online."
                     else "Do zakupu biletu potrzebujesz internetu.", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 20.dp))
@@ -268,16 +272,25 @@ private fun FilmRow(film: Film, screenings: List<Screening>, open: () -> Unit, b
                     modifier = Modifier.padding(top = 3.dp))
                 val meta = listOf(film.production, if (film.durationMinutes > 0) "${film.durationMinutes} min" else "").filter { it.isNotBlank() }.joinToString(" · ")
                 if (meta.isNotEmpty()) Text(meta, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 4.dp)) {
-                    screenings.forEach { screening ->
-                        OutlinedButton(onClick = { book(screening) }, shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                            modifier = Modifier.heightIn(min = 48.dp).testTag("screening-${screening.key}")
-                                .semantics { contentDescription = "${screening.time}, sala ${screening.room}" }) {
-                            Text((if (includeDate) screening.date.format(DateTimeFormatter.ofPattern("dd.MM")) + " · " else "") + screening.time,
-                                fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.labelLarge)
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 8.dp)) {
+                    screenings.groupBy { it.room }.forEach { (room, roomScreenings) ->
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text("Sala $room", style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.testTag("room-${film.id}-$room"))
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                roomScreenings.forEach { screening ->
+                                    OutlinedButton(onClick = { book(screening) }, shape = RoundedCornerShape(10.dp),
+                                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                                        modifier = Modifier.heightIn(min = 48.dp).testTag("screening-${screening.key}")
+                                            .semantics { contentDescription = "${screening.time}, sala ${screening.room}" }) {
+                                        Text((if (includeDate) screening.date.format(DateTimeFormatter.ofPattern("dd.MM")) + " · " else "") + screening.time,
+                                            fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.labelLarge)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -316,8 +329,10 @@ private fun FilmDetails(film: Film, library: Library, today: LocalDate, openUrl:
         val upcoming = library.screenings(film.id).filter { !it.date.isBefore(today) }
         if (upcoming.isEmpty()) item { EmptyState(Icons.Outlined.EventAvailable, "Brak zaplanowanych seansów", "Sprawdź repertuar ponownie później.", "Odśwież", refresh) }
         items(upcoming, key = { it.key }) { screening ->
-            ListItem(headlineContent = { Text("${screening.date.format(DateLabel).sentenceCase()} · ${screening.time}") },
-                supportingContent = { Text("Sala ${screening.room}" + if (screening.version.isNotBlank()) " · ${screening.version}" else "") },
+            ListItem(headlineContent = { Text("Sala ${screening.room}", style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary) },
+                supportingContent = { Text("${screening.date.format(DateLabel).sentenceCase()} · ${screening.time}" +
+                    if (screening.version.isNotBlank()) " · ${screening.version}" else "") },
                 trailingContent = { Icon(Icons.Outlined.ConfirmationNumber, null, tint = MaterialTheme.colorScheme.primary) },
                 colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
                 modifier = Modifier.clickable { book(screening) }.heightIn(min = 64.dp))
@@ -346,7 +361,7 @@ private fun CinemaInfo(library: Library, online: Boolean, refreshing: Boolean, r
         Text("Kupno biletu wymaga internetu. Ceny, miejsca i płatność obsługuje strona Kina Charlie.", style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 12.dp))
         HorizontalDivider(Modifier.padding(vertical = 24.dp))
-        Text("Nieoficjalna aplikacja · MVP 0.1.0", style = MaterialTheme.typography.labelLarge)
+        Text("Nieoficjalna aplikacja · MVP ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.labelLarge)
         Text("Repertuar, opisy i plakaty pochodzą z charlie.pl. Aplikacja nie jest powiązana z kinem. Bez konta i reklam.",
             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 8.dp, bottom = 24.dp))
     }

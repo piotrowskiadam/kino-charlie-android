@@ -25,6 +25,7 @@ The public cinema website is https://www.charlie.pl/. It publishes per-day HTML 
 ## Capabilities and Constraints
 
 - Native schedule browsing, date selection, film details, saved films and bottom navigation.
+- Room name is a primary screening-choice attribute: display it visibly with the available times on the schedule and saved-film list, in film details and before opening checkout. Equal times in different rooms remain distinct choices.
 - Quiet background synchronization and local persistence, fetching up to 14 days ahead where the cinema publishes screenings.
 - Uniform poster presentation; prefer source posters for MVP, without requiring third-party API credentials.
 - Filmweb link should identify whether it opens search rather than a verified film page.

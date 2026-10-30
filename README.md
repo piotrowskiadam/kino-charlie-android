@@ -5,7 +5,7 @@ Nieoficjalna aplikacja Android do repertuaru Kina Charlie w Łodzi. Kotlin, Jetp
 ## Funkcje
 
 - wybór dnia z 14 kolejnych terminów, wyszukiwanie polskich tytułów bez konieczności wpisywania znaków diakrytycznych;
-- prawdziwe plakaty, metadane, opis filmu, godziny i sale;
+- prawdziwe plakaty, metadane i opis filmu; godziny pogrupowane pod wyraźnymi nazwami sal;
 - zapisane filmy i lokalny repertuar dostępne po ponownym uruchomieniu bez sieci;
 - atomowy zapis cache, zachowanie danych po błędzie importu;
 - odświeżanie w tle przez WorkManager co 6 godzin, gdy system pozwoli; ręczne odświeżanie;

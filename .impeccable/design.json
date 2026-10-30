@@ -471,9 +471,9 @@
       "name": "Screening time",
       "kind": "button",
       "refersTo": "screening-button",
-      "description": "Exact screening selector. Illustrative native-to-web panel translation; see DESIGN.md.",
-      "html": "<button class=\"ds-time\">18:15</button>",
-      "css": ".ds-time{color:#742D3A;background:transparent;border:1px solid #742D3A;border-radius:10px;padding:8px 12px;min-height:48px;font:600 14px sans-serif}.ds-time:active{background:#F2DDE0}.ds-time:focus-visible,.ds-checkout:focus-visible,.ds-day:focus-visible,.ds-nav button:focus-visible{outline:2px solid #742D3A;outline-offset:3px}"
+      "description": "Exact screening selector under a visible room name, with room-aware accessible text. Illustrative native-to-web panel translation; see DESIGN.md.",
+      "html": "<div><p class=\"ds-room\">Sala Studyjna</p><button class=\"ds-time\" aria-label=\"18:15, sala Studyjna\">18:15</button></div>",
+      "css": ".ds-time{color:#742D3A;background:transparent;border:1px solid #742D3A;border-radius:10px;padding:8px 12px;min-height:48px;font:600 14px sans-serif}.ds-time:active{background:#F2DDE0}.ds-time:focus-visible,.ds-checkout:focus-visible,.ds-day:focus-visible,.ds-nav button:focus-visible{outline:2px solid #742D3A;outline-offset:3px}.ds-room{margin:8px 0 4px;color:#28201F;font:600 14px sans-serif}"
     },
     {
       "name": "Checkout",
@@ -503,9 +503,9 @@
       "name": "Program row",
       "kind": "custom",
       "refersTo": "poster",
-      "description": "Continuous row with source-art placeholder, never fabricated art. Illustrative native-to-web panel translation; see DESIGN.md.",
-      "html": "<article class=\"ds-film\"><div class=\"ds-poster\" aria-label=\"Brak plakatu\"><svg width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 3h16v18H4zM8 3v18M16 3v18M4 8h4M4 16h4M16 8h4M16 16h4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg></div><div><h3 class=\"ds-title\">Tytuł filmu</h3><p class=\"ds-meta\">Dramat · 120 min</p><button class=\"ds-time\">18:15</button></div></article>",
-      "css": ".ds-film{display:flex;gap:14px;padding:14px 0;border-top:1px solid #DCD0C7;background:#F8F4EC;color:#28201F}.ds-poster{width:82px;height:123px;flex-shrink:0;border-radius:8px;background:#EDE5DB;color:#665952;display:flex;align-items:center;justify-content:center}.ds-title{margin:0;color:#742D3A;font:600 18px/25px Literata,serif}.ds-meta{margin:3px 0 4px;color:#665952;font:14px sans-serif}.ds-time{color:#742D3A;background:transparent;border:1px solid #742D3A;border-radius:10px;padding:8px 12px;min-height:48px;font:600 14px sans-serif}.ds-time:active{background:#F2DDE0}.ds-time:focus-visible,.ds-checkout:focus-visible,.ds-day:focus-visible,.ds-nav button:focus-visible{outline:2px solid #742D3A;outline-offset:3px}"
+      "description": "Continuous row with visible room groups and source-art placeholder, never fabricated art. Illustrative native-to-web panel translation; see DESIGN.md.",
+      "html": "<article class=\"ds-film\"><div class=\"ds-poster\" aria-label=\"Brak plakatu\"><svg width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 3h16v18H4zM8 3v18M16 3v18M4 8h4M4 16h4M16 8h4M16 16h4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg></div><div><h3 class=\"ds-title\">Tytuł filmu</h3><p class=\"ds-meta\">Dramat · 120 min</p><p class=\"ds-room\">Sala Studyjna</p><button class=\"ds-time\" aria-label=\"18:15, sala Studyjna\">18:15</button></div></article>",
+      "css": ".ds-film{display:flex;gap:14px;padding:14px 0;border-top:1px solid #DCD0C7;background:#F8F4EC;color:#28201F}.ds-poster{width:82px;height:123px;flex-shrink:0;border-radius:8px;background:#EDE5DB;color:#665952;display:flex;align-items:center;justify-content:center}.ds-title{margin:0;color:#742D3A;font:600 18px/25px Literata,serif}.ds-meta{margin:3px 0 4px;color:#665952;font:14px sans-serif}.ds-time{color:#742D3A;background:transparent;border:1px solid #742D3A;border-radius:10px;padding:8px 12px;min-height:48px;font:600 14px sans-serif}.ds-time:active{background:#F2DDE0}.ds-time:focus-visible,.ds-checkout:focus-visible,.ds-day:focus-visible,.ds-nav button:focus-visible{outline:2px solid #742D3A;outline-offset:3px}.ds-room{margin:8px 0 4px;color:#28201F;font:600 14px sans-serif}"
     },
     {
       "name": "Compact navigation",
@@ -522,7 +522,7 @@
     "keyCharacteristics": [
       "Literata headings paired with native sans controls and numerals.",
       "Continuous program rows, restrained separators and a 2:3 poster silhouette.",
-      "Truthful cached status, complete titles and directly actionable screening times.",
+      "Truthful cached status, complete titles and visibly named room groups with directly actionable screening times.",
       "System dark theme, font scaling, Android Back and adaptive navigation."
     ],
     "rules": [
@@ -540,11 +540,17 @@
         "name": "The Continuous Sheet Rule",
         "body": "Separate films with outline-variant dividers rather than nesting each film in a raised card.",
         "section": "elevation"
+      },
+      {
+        "name": "The Room Rule",
+        "body": "Show the room name before the user chooses a screening time, on both schedule and saved-film lists. Repeat it prominently in film details and the screening sheet; equal times in different rooms remain separate choices.",
+        "section": "layout"
       }
     ],
     "dos": [
       "Do use Literata for the recorded heading roles and native sans for body, controls and date numerals.",
       "Do preserve full Polish titles, localized dates and explicit action labels.",
+      "Do expose room names before time selection, preserve all room groups in saved-film previews and repeat the selected room before checkout.",
       "Do keep source imagery at a 2:3 ratio and fall back to the source thumbnail when a poster fails.",
       "Do retain 8dp spacing between wrapped screening buttons and a minimum 48dp screening target.",
       "Do distinguish unpublished days, empty search, first download, cached content and connection errors."

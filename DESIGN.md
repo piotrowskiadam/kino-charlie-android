@@ -110,7 +110,7 @@ The user selected variant A in `docs/design/approved-mvp-variants.png`. The ship
 **Key Characteristics:**
 - Literata headings paired with native sans controls and numerals.
 - Continuous program rows, restrained separators and a 2:3 poster silhouette.
-- Truthful cached status, complete titles and directly actionable screening times.
+- Truthful cached status, complete titles and visibly named room groups with directly actionable screening times.
 - System dark theme, font scaling, Android Back and adaptive navigation.
 
 The preserved direction contract is: **THESIS:** choose a film and its exact screening quickly from a locally saved schedule. **OWN-WORLD:** printed pocket program translated into Literata, warm ivory, burgundy and native sans. **STORY:** saved status → date → film → time → focused screening sheet → source-owned checkout. **FIRST VIEWPORT:** compact brand and refresh, “Wybierz swój seans.”, cache status, day picker, search and film rows. **FORM:** portrait image at left, complete title and times at right; phone navigation becomes a tablet rail.
@@ -148,8 +148,8 @@ Literata supplies the literary program voice. Native sans keeps metadata, contro
 
 - **Headline large:** main page heading; explicit semibold. The compact “charlie” wordmark locally overrides its font size to 34sp and retains the heading's line height.
 - **Headline small:** film detail and screening sheet title; other properties inherit Material headlineSmall.
-- **Title large:** section and empty-state headings; explicit semibold. Date numerals locally use this role with native sans.
-- **Title medium:** film titles, date heading and detail toolbar; explicit semibold.
+- **Title large:** section and empty-state headings and the selected room in the screening sheet; explicit semibold. Date numerals locally use this role with native sans.
+- **Title medium:** film titles, date heading, detail toolbar and room names in detail screening rows; explicit semibold.
 - **Body and labels:** Material bodyLarge/bodyMedium/bodySmall and labelLarge/labelMedium, inherited without local scale changes. Screening times locally use semibold labelLarge.
 
 **The Complete Title Rule.** Critical film names wrap; the implementation sets no title truncation or maximum line count.
@@ -158,7 +158,9 @@ Literata supplies the literary program voice. Native sans keeps metadata, contro
 
 The phone uses a single scrolling program with 24dp horizontal gutters. Film rows use a fixed 82×123dp portrait poster, a 14dp image/text gap and 14dp vertical padding. Detail posters enlarge to 110×165dp. Headings and supporting sections use the frontmatter spacing rhythm; small metadata offsets of 3dp and status gaps of 6dp are local exceptions rather than new shared scales.
 
-Screening controls flow into additional rows with 8dp horizontal and vertical spacing and 4dp top padding. Their minimum height is 48dp; checkout uses a 52dp minimum. Day tiles have a 60dp minimum width and a horizontally scrolling 14-day picker. Long text can increase height, including under Android font scaling.
+Screenings are grouped by room, with 8dp above the group collection, 12dp between groups and 4dp from a visible semibold Material labelLarge room name to its controls. Screening controls flow into additional rows with 8dp horizontal and vertical spacing. Their minimum height is 48dp; checkout uses a 52dp minimum. Day tiles have a 60dp minimum width and a horizontally scrolling 14-day picker. Long text can increase height, including under Android font scaling.
+
+**The Room Rule.** Show the room name before the user chooses a screening time, on both schedule and saved-film lists. Repeat it prominently in film details and the screening sheet; equal times in different rooms remain separate choices.
 
 At available width ≥600dp, the app uses a navigation rail and a two-column film list with a 24dp column gap. Below that threshold it uses bottom navigation. Detail and screening views remain focused single flows. Scaffold and status-bar insets preserve safe drawing areas.
 
@@ -176,7 +178,7 @@ Posters use the 8dp corner token. Screening outlines use 10dp corners; date tile
 
 ### Buttons
 
-Screening times are outlined primary actions with a 1dp primary stroke, semibold Material labelLarge and the recorded screening padding/corner tokens. A time opens a focused modal sheet; the row itself opens film details. Checkout is a full-width Material filled button with a confirmation icon and explicit Polish action, disabled when offline or without a permitted source URL. General external actions use Material buttons, outlined buttons or text buttons as implemented. Android supplies pressed, focus, ripple and disabled states; no custom hover animation is defined.
+Screening times are outlined primary actions with a 1dp primary stroke, semibold Material labelLarge and the recorded screening padding/corner tokens. Each room's times sit under a visible “Sala <name>” label; the button's accessible name includes the time and room. A time opens a focused modal sheet; the row itself opens film details. Checkout is a full-width Material filled button with a confirmation icon and explicit Polish action, disabled when offline or without a permitted source URL. General external actions use Material buttons, outlined buttons or text buttons as implemented. Android supplies pressed, focus, ripple and disabled states; no custom hover animation is defined.
 
 ### Date tiles
 
@@ -184,7 +186,7 @@ The selected day uses primary/on-primary; idle days use surface-container-low/on
 
 ### Program rows and posters
 
-Rows share the app surface, with a top divider and no raised-card shell. Poster cropping is centered with ContentScale.Crop. The same title/metadata/time order persists in saved films, with a date prefix on saved screening times. Known source limitation: some full poster URLs return HTTP 404. Poster first requests the source poster, then switches to the source thumbnail on failure or missing URL. If neither image loads, the tonal backing and outlined theater icon remain; no fabricated art is generated or shipped.
+Rows share the app surface, with a top divider and no raised-card shell. Poster cropping is centered with ContentScale.Crop. The same title/metadata/room/time order persists in saved films, with a date prefix on saved screening times and up to three upcoming screenings per room, preserving every available room. Known source limitation: some full poster URLs return HTTP 404. Poster first requests the source poster, then switches to the source thumbnail on failure or missing URL. If neither image loads, the tonal backing and outlined theater icon remain; no fabricated art is generated or shipped.
 
 ### Search
 
@@ -196,13 +198,14 @@ A full-width, single-line outlined field uses the search corner token, a search 
 
 ### Status and screening sheet
 
-A factual label pairs cache age or connection state with an outlined status icon; refresh shows a small progress indicator. Errors retain cached content and offer retry. The standard Material modal sheet lists the film, date, time and room before the online-purchase explanation and checkout action. Keep offline and missing-link states explicit.
+A factual label pairs cache age or connection state with an outlined status icon; refresh shows a small progress indicator. Errors retain cached content and offer retry. Detail screening rows use primary titleMedium room names above the date and time. The standard Material modal sheet lists the film and date/time, then emphasizes the selected room with primary titleLarge before the online-purchase explanation and checkout action. Keep offline and missing-link states explicit.
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** use Literata for the recorded heading roles and native sans for body, controls and date numerals.
 - **Do** preserve full Polish titles, localized dates and explicit action labels.
+- **Do** expose room names before time selection, preserve all room groups in saved-film previews and repeat the selected room before checkout.
 - **Do** keep source imagery at a 2:3 ratio and fall back to the source thumbnail when a poster fails.
 - **Do** retain 8dp spacing between wrapped screening buttons and a minimum 48dp screening target.
 - **Do** distinguish unpublished days, empty search, first download, cached content and connection errors.
